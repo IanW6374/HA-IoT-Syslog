@@ -4,6 +4,7 @@ env:
   MONITORED_FILES: "config.json config.yaml config.yml Dockerfile rootfs"
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - main
@@ -38,9 +39,12 @@ jobs:
         env:
           APPS: ${{ steps.apps.outputs.addons }}
           CHANGED_FILES: ${{ steps.changed_files.outputs.all_changed_files }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           changed_apps=()
-          if [[ "${CHANGED_FILES}" =~ \.github/workflows/(builder|build-app)\.yaml ]]; then
+          if [[ "${EVENT_NAME}" == "workflow_dispatch" || -z "${CHANGED_FILES}" ]]; then
+            changed_apps=(${APPS})
+          elif [[ "${CHANGED_FILES}" =~ \.github/workflows/(builder|build-app)\.yaml ]]; then
             changed_apps=(${APPS})
           else
             for app in ${APPS}; do

@@ -10,3 +10,4 @@
 - Distinguish `HAMD` device logs from `HAMD-Audit` audit events.
 - Automatically purge events after a user-defined retention period.
 - Export the currently filtered result set as CSV.
+- Publish installable multi-architecture images on the initial repository commit and manual workflow runs.
