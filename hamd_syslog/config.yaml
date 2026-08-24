@@ -1,5 +1,5 @@
 name: HAMD Syslog
-version: "0.1.0"
+version: "0.1.1"
 slug: hamd_syslog
 description: Encrypted, searchable syslog collection for Home Assistant Modular Devices
 url: https://github.com/IanW6374/HAMD-Syslog-Add-on/tree/main/hamd_syslog

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1
+
+- Refresh the visible event page automatically every five seconds.
+- Preserve active search filters and pagination during automatic refreshes.
+- Ignore stale overlapping responses and refresh immediately when the browser tab becomes visible.
+- Display the time of the most recent successful event refresh.
+
 ## 0.1.0
 
 - Receive RFC 5424 syslog over authenticated TLS with RFC 6587 octet-counted framing.

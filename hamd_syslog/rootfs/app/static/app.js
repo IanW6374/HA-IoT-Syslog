@@ -1,10 +1,12 @@
 "use strict";
 
 const PAGE_SIZE = 100;
+const EVENT_REFRESH_INTERVAL_MS = 5000;
 const state = { offset: 0, total: 0, query: new URLSearchParams() };
 const form = document.querySelector("#filters");
 const rows = document.querySelector("#event-rows");
 const errorBox = document.querySelector("#error");
+let eventRequestSequence = 0;
 
 function endpoint(path) {
   return new URL(path, window.location.href);
@@ -63,6 +65,7 @@ function renderEvents(events) {
 }
 
 async function loadEvents() {
+  const requestSequence = ++eventRequestSequence;
   showError("");
   const url = endpoint("api/events");
   for (const [key, value] of state.query) url.searchParams.set(key, value);
@@ -72,6 +75,7 @@ async function loadEvents() {
     const response = await fetch(url);
     if (!response.ok) throw new Error(await response.text() || response.statusText);
     const result = await response.json();
+    if (requestSequence !== eventRequestSequence) return;
     state.total = result.total;
     renderEvents(result.events);
     const first = result.total ? state.offset + 1 : 0;
@@ -80,9 +84,16 @@ async function loadEvents() {
     document.querySelector("#page").textContent = `Page ${Math.floor(state.offset / PAGE_SIZE) + 1}`;
     document.querySelector("#previous").disabled = state.offset === 0;
     document.querySelector("#next").disabled = state.offset + PAGE_SIZE >= state.total;
+    document.querySelector("#refresh-state").textContent = `Updated ${new Date().toLocaleTimeString()}`;
   } catch (error) {
+    if (requestSequence !== eventRequestSequence) return;
     showError(`Could not load events: ${error.message}`);
+    document.querySelector("#refresh-state").textContent = "Refresh failed";
   }
+}
+
+function refreshVisibleEvents() {
+  if (document.visibilityState === "visible") loadEvents();
 }
 
 function addOptions(id, values) {
@@ -165,3 +176,5 @@ document.querySelector("#export").addEventListener("click", () => {
 loadSummary();
 loadEvents();
 window.setInterval(refreshStatus, 30000);
+window.setInterval(refreshVisibleEvents, EVENT_REFRESH_INTERVAL_MS);
+document.addEventListener("visibilitychange", refreshVisibleEvents);
