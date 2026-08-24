@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HAMD Syslog</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">Home Assistant Modular Device</p>
+      <h1>Syslog</h1>
+    </div>
+    <div class="top-actions">
+      <a id="ca-download" class="button secondary hidden" href="api/ca.der" download>Download HAMD CA (.der)</a>
+      <button id="export" class="button secondary" type="button">Export visible results</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="status-grid" aria-label="Receiver status">
+      <div class="status-card"><span>Stored</span><strong id="stored-count">—</strong></div>
+      <div class="status-card"><span>Retention</span><strong id="retention">—</strong></div>
+      <div class="status-card"><span>TLS</span><strong id="tls-state">—</strong></div>
+      <div class="status-card"><span>Dropped</span><strong id="dropped-count">—</strong></div>
+    </section>
+
+    <section id="tls-details" class="notice hidden" aria-live="polite"></section>
+
+    <section class="panel filters" aria-labelledby="filter-heading">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Query</p>
+          <h2 id="filter-heading">Find events</h2>
+        </div>
+        <button id="reset" class="text-button" type="button">Clear filters</button>
+      </div>
+      <form id="filters">
+        <label class="search-field">
+          <span>Search message, host, or application</span>
+          <input id="q" name="q" type="search" placeholder="Search logs…" autocomplete="off">
+        </label>
+        <div class="filter-grid">
+          <label><span>Source</span><select name="source"><option value="">All sources</option><option value="device">Device logs</option><option value="audit">Audit events</option></select></label>
+          <label><span>Device / host</span><select id="hostname" name="hostname"><option value="">All devices</option></select></label>
+          <label><span>Application</span><select id="app" name="app"><option value="">All applications</option></select></label>
+          <label><span>Severity</span><select name="severity"><option value="">All severities</option><option value="0">Emergency</option><option value="1">Alert</option><option value="2">Critical</option><option value="3">Error</option><option value="4">Warning</option><option value="5">Notice</option><option value="6">Info</option><option value="7">Debug</option></select></label>
+          <label><span>Transport</span><select id="transport" name="transport"><option value="">All transports</option></select></label>
+          <label><span>From</span><input name="start" type="datetime-local"></label>
+          <label><span>To</span><input name="end" type="datetime-local"></label>
+        </div>
+        <button class="button primary" type="submit">Search</button>
+      </form>
+    </section>
+
+    <section class="panel results" aria-labelledby="events-heading">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Results</p>
+          <h2 id="events-heading">Events</h2>
+        </div>
+        <span id="result-count" class="count">Loading…</span>
+      </div>
+      <div id="error" class="error hidden" role="alert"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Time</th><th>Device</th><th>Source</th><th>Severity</th><th>Transport</th><th>Message</th></tr></thead>
+          <tbody id="event-rows"></tbody>
+        </table>
+        <p id="empty" class="empty hidden">No events match these filters.</p>
+      </div>
+      <nav class="pagination" aria-label="Results pages">
+        <button id="previous" class="button secondary" type="button">Previous</button>
+        <span id="page">Page 1</span>
+        <button id="next" class="button secondary" type="button">Next</button>
+      </nav>
+    </section>
+  </main>
+  <script src="app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+configuration:
+  udp_enabled:
+    name: Enable UDP receiver
+    description: Accept unencrypted syslog datagrams. Leave disabled when all senders support TLS.
+  tls_enabled:
+    name: Enable TLS receiver
+    description: Accept encrypted RFC 6587 octet-counted syslog connections.
+  tls_mode:
+    name: TLS certificate mode
+    description: Generate a dedicated local CA and server certificate, or load custom files from /ssl.
+  tls_server_names:
+    name: TLS server names
+    description: Comma-separated DNS names and IP addresses that HAMD devices may use to reach this server.
+  tls_certificate:
+    name: Custom server certificate
+    description: Certificate filename beneath /ssl, used only in custom mode.
+  tls_private_key:
+    name: Custom server private key
+    description: Private-key filename beneath /ssl, used only in custom mode.
+  tls_ca_certificate:
+    name: Custom CA certificate
+    description: CA filename beneath /ssl. When supplied, it can be downloaded from the app for device trust setup.
+  retention_days:
+    name: Retention period
+    description: Delete events after this many days, based on the time they were received.
+  purge_interval_hours:
+    name: Cleanup interval
+    description: Number of hours between automatic retention cleanups.
+  max_message_kib:
+    name: Maximum message size
+    description: Reject individual messages larger than this limit.
+network:
+  514/udp: Unencrypted syslog (disabled by default)
+  6514/tcp: Encrypted syslog over TLS
