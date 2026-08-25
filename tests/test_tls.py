@@ -7,6 +7,7 @@ from pathlib import Path
 
 from cryptography import x509
 from cryptography.x509 import DNSName, IPAddress
+from cryptography.x509.oid import NameOID
 
 from hamd_syslog.config import load_settings
 from hamd_syslog.tls import prepare_tls
@@ -27,6 +28,11 @@ class TLSTests(unittest.TestCase):
             second = prepare_tls(settings)
             self.assertEqual(second.ca_certificate.read_bytes(), first_ca)
             self.assertIsInstance(second.context, ssl.SSLContext)
+            ca = x509.load_pem_x509_certificate(first_ca)
+            self.assertEqual(
+                ca.subject.get_attributes_for_oid(NameOID.COMMON_NAME)[0].value,
+                "IoT Syslog Local CA",
+            )
             cert = x509.load_pem_x509_certificate((root / "data/tls/server.crt").read_bytes())
             sans = cert.extensions.get_extension_for_class(x509.SubjectAlternativeName).value
             self.assertEqual(sans.get_values_for_type(DNSName), ["syslog.home.arpa"])

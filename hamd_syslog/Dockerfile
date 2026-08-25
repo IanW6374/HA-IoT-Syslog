@@ -18,7 +18,7 @@ LABEL \
     io.hass.version="${BUILD_VERSION}" \
     io.hass.type="app" \
     io.hass.arch="${BUILD_ARCH}" \
-    org.opencontainers.image.title="Home Assistant App: HAMD Syslog" \
-    org.opencontainers.image.description="Encrypted, searchable syslog collection for Home Assistant Modular Devices" \
-    org.opencontainers.image.source="https://github.com/IanW6374/HAMD-Syslog-Add-on" \
+    org.opencontainers.image.title="Home Assistant App: IoT Syslog" \
+    org.opencontainers.image.description="Encrypted, searchable syslog collection for IoT devices" \
+    org.opencontainers.image.source="https://github.com/IanW6374/HA-IoT-Syslog" \
     org.opencontainers.image.licenses="MIT"

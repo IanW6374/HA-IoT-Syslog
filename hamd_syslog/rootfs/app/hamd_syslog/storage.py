@@ -15,6 +15,8 @@ EVENT_COLUMNS = (
     "procid", "msgid", "structured_data", "message", "raw", "transport", "peer",
 )
 
+AUDIT_APPLICATIONS = ("iotmd-audit", "hamd-audit")
+
 
 class EventStore:
     def __init__(self, path: Path):
@@ -82,9 +84,9 @@ class EventStore:
                 values.append(value)
         source = str(filters.get("source", "")).strip().lower()
         if source == "audit":
-            clauses.append("LOWER(app_name) = 'hamd-audit'")
+            clauses.append("LOWER(app_name) IN ('iotmd-audit', 'hamd-audit')")
         elif source == "device":
-            clauses.append("LOWER(app_name) <> 'hamd-audit'")
+            clauses.append("LOWER(app_name) NOT IN ('iotmd-audit', 'hamd-audit')")
         severity = filters.get("severity")
         if severity not in (None, ""):
             clauses.append("severity = ?")
@@ -113,7 +115,7 @@ class EventStore:
             item = dict(row)
             item["severity_name"] = SEVERITY_NAMES.get(item["severity"], str(item["severity"]))
             item["facility_name"] = FACILITY_NAMES.get(item["facility"], str(item["facility"]))
-            item["source"] = "audit" if item["app_name"].lower() == "hamd-audit" else "device"
+            item["source"] = "audit" if item["app_name"].lower() in AUDIT_APPLICATIONS else "device"
             events.append(item)
         return {"events": events, "total": total, "limit": limit, "offset": offset}
 

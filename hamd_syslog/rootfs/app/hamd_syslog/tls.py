@@ -53,7 +53,7 @@ def _general_names(names: tuple[str, ...]) -> list[x509.GeneralName]:
 def _generate_ca(ca_key_path: Path, ca_cert_path: Path) -> tuple[object, x509.Certificate]:
     now = datetime.now(timezone.utc)
     key = rsa.generate_private_key(public_exponent=65537, key_size=3072)
-    subject = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, "HAMD Syslog Local CA")])
+    subject = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, "IoT Syslog Local CA")])
     cert = (
         x509.CertificateBuilder()
         .subject_name(subject)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""HAMD Syslog service entrypoint."""
+"""IoT Syslog service entrypoint."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from hamd_syslog.tls import prepare_tls
 from hamd_syslog.web import WebInterface
 
 
-LOGGER = logging.getLogger("hamd-syslog")
+LOGGER = logging.getLogger("iot-syslog")
 
 
 async def purge_periodically(store: EventStore, retention_days: int, interval_hours: int) -> None:
@@ -57,7 +57,7 @@ async def run() -> None:
             LOGGER.warning("Both syslog listeners are disabled; the search interface will remain available")
         await web.start(settings.web_port)
         LOGGER.info(
-            "HAMD Syslog ready; retention=%d days, web_port=%d",
+            "IoT Syslog ready; retention=%d days, web_port=%d",
             settings.retention_days,
             settings.web_port,
         )

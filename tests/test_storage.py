@@ -7,7 +7,7 @@ from hamd_syslog.protocol import SyslogEvent
 from hamd_syslog.storage import EventStore
 
 
-def event(received_at, app_name="HAMD", hostname="controller", message="started", severity=6):
+def event(received_at, app_name="IoTMD", hostname="controller", message="started", severity=6):
     return SyslogEvent(
         received_at=received_at,
         event_time=received_at,
@@ -37,12 +37,19 @@ class StorageTests(unittest.TestCase):
     def test_filters_device_and_audit_sources(self):
         now = "2026-08-24T12:00:00.000Z"
         self.store.insert_many(
-            [event(now, message="device ready"), event(now, app_name="HAMD-Audit", message="login accepted")]
+            [
+                event(now, message="device ready"),
+                event(now, app_name="IoTMD-Audit", message="login accepted"),
+                event(now, app_name="HAMD-Audit", message="legacy login accepted"),
+            ]
         )
         device = self.store.search({"source": "device"})
         audit = self.store.search({"source": "audit"})
         self.assertEqual([item["message"] for item in device["events"]], ["device ready"])
-        self.assertEqual([item["message"] for item in audit["events"]], ["login accepted"])
+        self.assertEqual(
+            {item["message"] for item in audit["events"]},
+            {"login accepted", "legacy login accepted"},
+        )
 
     def test_combines_text_severity_and_hostname_filters(self):
         now = "2026-08-24T12:00:00.000Z"

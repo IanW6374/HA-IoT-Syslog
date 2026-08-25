@@ -35,14 +35,14 @@ class IntegrationTests(unittest.IsolatedAsyncioTestCase):
         self.store.close()
         self.temporary.cleanup()
 
-    async def test_hamd_tls_frame_is_searchable_through_ingress_api(self):
+    async def test_iotmd_tls_frame_is_searchable_through_ingress_api(self):
         await self.listeners.start_tls(0, self.material.context)
         port = self.listeners.tls_server.sockets[0].getsockname()[1]
         client_context = ssl.create_default_context(cafile=str(self.material.ca_certificate))
         _, writer = await asyncio.open_connection(
             "127.0.0.1", port, ssl=client_context, server_hostname="localhost"
         )
-        payload = b"<134>1 2026-08-24T12:00:00Z field-7 HAMD-Audit - - - API connection accepted"
+        payload = b"<134>1 2026-08-24T12:00:00Z field-7 IoTMD-Audit - - - API connection accepted"
         writer.write(str(len(payload)).encode() + b" " + payload)
         await writer.drain()
         writer.close()

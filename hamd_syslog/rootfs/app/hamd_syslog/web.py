@@ -143,14 +143,14 @@ class WebInterface:
         return web.Response(
             body=ssl.PEM_cert_to_DER_cert(pem),
             content_type="application/pkix-cert",
-            headers={"Content-Disposition": 'attachment; filename="hamd-syslog-ca.der"'},
+            headers={"Content-Disposition": 'attachment; filename="iot-syslog-ca.der"'},
         )
 
     async def ca_certificate_pem(self, _request: web.Request) -> web.Response:
         return web.Response(
             body=self._ca_pem(),
             content_type="application/x-pem-file",
-            headers={"Content-Disposition": 'attachment; filename="hamd-syslog-ca.pem"'},
+            headers={"Content-Disposition": 'attachment; filename="iot-syslog-ca.pem"'},
         )
 
     async def export_csv(self, request: web.Request) -> web.Response:
@@ -166,7 +166,7 @@ class WebInterface:
         return web.Response(
             text=output.getvalue(),
             content_type="text/csv",
-            headers={"Content-Disposition": 'attachment; filename="hamd-syslog.csv"'},
+            headers={"Content-Disposition": 'attachment; filename="iot-syslog.csv"'},
         )
 
     async def close(self) -> None:

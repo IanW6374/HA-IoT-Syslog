@@ -12,8 +12,10 @@ ROOT = Path(__file__).parents[1]
 class StaticInterfaceTests(unittest.TestCase):
     def test_patch_versions_are_consistent(self):
         config = yaml.safe_load((ROOT / "hamd_syslog/config.yaml").read_text(encoding="utf-8"))
-        self.assertEqual(config["version"], "0.1.1")
+        self.assertEqual(config["version"], "0.1.2")
         self.assertEqual(hamd_syslog.__version__, config["version"])
+        self.assertEqual(config["name"], "IoT Syslog")
+        self.assertEqual(config["panel_title"], "IoT Syslog")
 
     def test_event_table_auto_refreshes_without_resetting_query_or_offset(self):
         script = (ROOT / "hamd_syslog/rootfs/app/static/app.js").read_text(encoding="utf-8")

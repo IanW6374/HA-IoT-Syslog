@@ -4,26 +4,26 @@ from hamd_syslog.protocol import OctetCountedFramer, parse_rfc5424
 
 
 class ProtocolTests(unittest.TestCase):
-    def test_parses_hamd_device_event(self):
+    def test_parses_iotmd_device_event(self):
         event = parse_rfc5424(
-            b"<131>1 2026-08-22T12:00:00Z controller HAMD - - - Update failed",
+            b"<131>1 2026-08-22T12:00:00Z controller IoTMD - - - Update failed",
             "tls",
             "192.0.2.10",
         )
         self.assertEqual(event.facility, 16)
         self.assertEqual(event.severity, 3)
         self.assertEqual(event.hostname, "controller")
-        self.assertEqual(event.app_name, "HAMD")
+        self.assertEqual(event.app_name, "IoTMD")
         self.assertEqual(event.message, "Update failed")
         self.assertEqual(event.transport, "tls")
 
-    def test_parses_hamd_audit_event(self):
+    def test_parses_iotmd_audit_event(self):
         event = parse_rfc5424(
-            b"<134>1 - field-unit HAMD-Audit - - - portal login accepted",
+            b"<134>1 - field-unit IoTMD-Audit - - - portal login accepted",
             "udp",
             "192.0.2.11",
         )
-        self.assertEqual(event.app_name, "HAMD-Audit")
+        self.assertEqual(event.app_name, "IoTMD-Audit")
         self.assertIsNone(event.event_time)
         self.assertEqual(event.message, "portal login accepted")
 

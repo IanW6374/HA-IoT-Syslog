@@ -1,16 +1,16 @@
-# HAMD Syslog
+# IoT Syslog
 
-HAMD Syslog stores device and audit events in a searchable local database. It is designed to match the remote logging support in Home Assistant Modular Device v2.
+IoT Syslog stores device and audit events in a searchable local database. It supports standards-compliant syslog senders and directly matches the remote logging support in IoT Modular Device v2.1 and later.
 
 ## First start with generated TLS
 
 The default settings enable encrypted syslog on TCP port 6514 and disable unencrypted UDP.
 
-1. Set **TLS server names** to every hostname or IP address that HAMD devices will use for this Home Assistant host. Separate multiple values with commas. For example: `homeassistant.local,192.168.1.20`.
+1. Set **TLS server names** to every hostname or IP address that devices will use for this Home Assistant host. Separate multiple values with commas. For example: `homeassistant.local,192.168.1.20`.
 2. Start the app, then open its web interface.
-3. Select **Download HAMD CA (.der)**. This is the public CA certificate; the CA private key never leaves app storage.
-4. On each HAMD portal, open **Maintenance > Certificates**, import the file as **Syslog trusted CA**, and allow the requested restart.
-5. In the HAMD logging configuration, enable device logs and/or audit events, select **TLS**, enter one of the exact server names from step 1, and use port `6514`.
+3. Select **Download IoT Syslog CA (.der)**. This is the public CA certificate; the CA private key never leaves app storage.
+4. On each IoTMD portal, open **Maintenance > Certificates**, import the file as **Syslog trusted CA**, and allow the requested restart.
+5. In the IoTMD logging configuration, enable device logs and/or audit events, select **TLS**, enter one of the exact server names from step 1, and use port `6514`.
 
 Hostname verification is intentional. If a device connects to `192.168.1.20`, that IP must be listed in **TLS server names**; listing only `homeassistant.local` is not sufficient.
 
@@ -18,15 +18,15 @@ Changing the server-name list issues a replacement server certificate from the s
 
 ## TLS modes
 
-### Home Assistant IoT Certificate Authority (recommended for HAMD fleets)
+### Home Assistant IoT Certificate Authority (recommended for IoTMD fleets)
 
 If Home Assistant already has a certificate and key issued by [Home Assistant IoT Certificate Authority](https://github.com/IanW6374/HA-IoT-Certificate-Authority), select `custom` mode and point the certificate options at those existing `/ssl` files. Common filenames are `fullchain.pem` and `privkey.pem`, but use the actual filenames on your system.
 
-The certificate must include the hostname or IP address configured on HAMD devices and must allow TLS server authentication. Prefer a full-chain PEM so the syslog listener presents the leaf and online intermediate certificates together. The private key is mounted read-only and remains in `/ssl`.
+The certificate must include the hostname or IP address configured on IoTMD devices and must allow TLS server authentication. Prefer a full-chain PEM so the syslog listener presents the leaf and online intermediate certificates together. The private key is mounted read-only and remains in `/ssl`.
 
-Install the IoT CA root certificate as **Syslog trusted CA** on each HAMD device. You can download it in DER format directly from the IoT Certificate Authority app. If the same root PEM is present in `/ssl`, set **Custom CA certificate** to that filename and HAMD Syslog will also expose its convenient DER download button.
+Install the IoT CA root certificate as **Syslog trusted CA** on each IoTMD device. You can download it in DER format directly from the IoT Certificate Authority app. If the same root PEM is present in `/ssl`, set **Custom CA certificate** to that filename and IoT Syslog will also expose its convenient DER download button.
 
-HAMD Syslog does not currently enrol or renew this shared Home Assistant identity. Its lifecycle remains managed by the IoT Certificate Authority and the mechanism that places the renewed files in `/ssl`; restart HAMD Syslog after renewal so it loads the replacement identity.
+IoT Syslog does not currently enrol or renew this shared Home Assistant identity. Its lifecycle remains managed by the IoT Certificate Authority and the mechanism that places the renewed files in `/ssl`; restart IoT Syslog after renewal so it loads the replacement identity.
 
 ### Generated
 
@@ -53,7 +53,7 @@ The `/ssl` mount is read-only. Restart the app after replacing custom certificat
 The ingress interface supports:
 
 - free-text matching across message, raw record, device hostname, and application
-- source separation between HAMD device logs and `HAMD-Audit` audit events
+- source separation between `IoTMD` device logs and `IoTMD-Audit` audit events
 - exact device, application, severity, and transport filters
 - received-time range filters
 - newest-first pagination and CSV export
@@ -75,7 +75,7 @@ The event timestamp supplied by the device is displayed when valid. Retention al
 | `purge_interval_hours` | `6` | Run automatic cleanup every 1–168 hours and once at startup. |
 | `max_message_kib` | `64` | Reject individual messages above this limit. |
 
-The Home Assistant Network panel can change the host-side port without changing the standard container ports. Configure HAMD with the effective host-side port shown there.
+The Home Assistant Network panel can change the host-side port without changing the standard container ports. Configure each sender with the effective host-side port shown there.
 
 ## Storage and backups
 
@@ -99,4 +99,4 @@ Enable `udp_enabled`, restart the app, and check the UDP 514 host mapping. UDP i
 
 ### Events are stored but not found
 
-Clear all filters and search again. Time filters are converted from browser-local time to UTC. The app classifies only the exact RFC 5424 application name `HAMD-Audit` as an audit event.
+Clear all filters and search again. Time filters are converted from browser-local time to UTC. The app classifies the RFC 5424 application name `IoTMD-Audit` as an audit event. Legacy stored records using `HAMD-Audit` remain classified as audit events.

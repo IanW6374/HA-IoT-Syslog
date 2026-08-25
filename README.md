@@ -1,19 +1,19 @@
-# HAMD Syslog for Home Assistant
+# IoT Syslog for Home Assistant
 
-HAMD Syslog is a Home Assistant app (formerly called an add-on) for collecting, searching, and retaining logs from the [Home Assistant Modular Device](https://github.com/IanW6374/Home_Assistant-Modular_Device) project.
+IoT Syslog is a Home Assistant app (formerly called an add-on) for collecting, searching, and retaining logs from IoT devices, including the [IoT Modular Device](https://github.com/IanW6374/IoT-Modular-Device) project.
 
-It receives the protocol already implemented by HAMD:
+It receives the protocol implemented by IoTMD and other standards-compliant senders:
 
 - RFC 5424 syslog using the `local0` facility
 - encrypted TCP with TLS and RFC 6587 octet-counted framing on port 6514
 - optional, unencrypted UDP on port 514
-- `HAMD` application names for device logs and `HAMD-Audit` for audit events
+- `IoTMD` application names for device logs and `IoTMD-Audit` for audit events
 
 ## Features
 
 - TLS enabled and UDP disabled by default
 - dedicated local CA and server certificate generated on first start
-- HAMD-compatible CA download in DER format
+- device-compatible CA download in DER format
 - custom certificate support from Home Assistant's `/ssl` directory
 - searchable ingress interface with source, device, application, severity, transport, and time filters
 - SQLite persistence in the app's backed-up `/data` directory
@@ -27,18 +27,18 @@ It receives the protocol already implemented by HAMD:
 1. In Home Assistant, open **Settings > Apps > App store** (shown as **Add-ons** on older releases).
 2. Open the repository menu, choose **Repositories**, and add:
 
-   `https://github.com/IanW6374/HAMD-Syslog-Add-on`
+   `https://github.com/IanW6374/HA-IoT-Syslog`
 
-3. Install **HAMD Syslog**.
+3. Install **IoT Syslog**.
 4. Read the app documentation before starting it, especially the TLS server-name requirement.
 
 Detailed setup and option descriptions are in [hamd_syslog/DOCS.md](hamd_syslog/DOCS.md).
 
-For HAMD deployments using [Home Assistant IoT Certificate Authority](https://github.com/IanW6374/HA-IoT-Certificate-Authority), the recommended production setup is `custom` TLS mode with that CA's existing Home Assistant certificate and key mounted read-only from `/ssl`. The app does not copy or re-enrol the private key.
+For IoTMD deployments using [Home Assistant IoT Certificate Authority](https://github.com/IanW6374/HA-IoT-Certificate-Authority), the recommended production setup is `custom` TLS mode with that CA's existing Home Assistant certificate and key mounted read-only from `/ssl`. The app does not copy or re-enrol the private key.
 
 ## Security model
 
-TLS provides encryption in transit and authenticates the server to each HAMD device. HAMD validates the issuing CA and checks that its configured syslog host is present in the certificate's subject alternative names. The current HAMD client does not present a client certificate, so this is server-authenticated TLS rather than mutual TLS.
+TLS provides encryption in transit and authenticates the server to each IoTMD device. IoTMD validates the issuing CA and checks that its configured syslog host is present in the certificate's subject alternative names. The current IoTMD client does not present a client certificate, so this is server-authenticated TLS rather than mutual TLS.
 
 Generated private keys remain in the app's persistent `/data/tls` directory and are never offered for download. The search interface is exposed only through authenticated Home Assistant ingress. UDP is available for compatibility but is unencrypted and disabled by default.
 

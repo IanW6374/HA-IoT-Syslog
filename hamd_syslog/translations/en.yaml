@@ -10,7 +10,7 @@ configuration:
     description: Generate a dedicated local CA and server certificate, or load custom files from /ssl.
   tls_server_names:
     name: TLS server names
-    description: Comma-separated DNS names and IP addresses that HAMD devices may use to reach this server.
+    description: Comma-separated DNS names and IP addresses that devices may use to reach this server.
   tls_certificate:
     name: Custom server certificate
     description: Certificate filename beneath /ssl, used only in custom mode.

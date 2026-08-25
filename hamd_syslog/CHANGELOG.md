@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.2
+
+- Rename the app and its user-facing interface from HAMD Syslog to IoT Syslog.
+- Describe the service as a generic IoT syslog receiver with first-class IoTMD support.
+- Classify new `IoTMD-Audit` records as audit events while retaining classification of stored legacy `HAMD-Audit` records.
+- Retain the existing Home Assistant slug, persistent data path, and container image name for in-place upgrades.
+
 ## 0.1.1
 
 - Refresh the visible event page automatically every five seconds.
