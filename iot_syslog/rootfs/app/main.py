@@ -8,12 +8,12 @@ import logging
 import signal
 from pathlib import Path
 
-from hamd_syslog.config import load_settings
-from hamd_syslog.ingest import EventIngestor
-from hamd_syslog.receiver import SyslogListeners
-from hamd_syslog.storage import EventStore
-from hamd_syslog.tls import prepare_tls
-from hamd_syslog.web import WebInterface
+from iot_syslog.config import load_settings
+from iot_syslog.ingest import EventIngestor
+from iot_syslog.receiver import SyslogListeners
+from iot_syslog.storage import EventStore
+from iot_syslog.tls import prepare_tls
+from iot_syslog.web import WebInterface
 
 
 LOGGER = logging.getLogger("iot-syslog")

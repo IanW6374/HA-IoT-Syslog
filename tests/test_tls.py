@@ -9,8 +9,8 @@ from cryptography import x509
 from cryptography.x509 import DNSName, IPAddress
 from cryptography.x509.oid import NameOID
 
-from hamd_syslog.config import load_settings
-from hamd_syslog.tls import prepare_tls
+from iot_syslog.config import load_settings
+from iot_syslog.tls import prepare_tls
 
 
 class TLSTests(unittest.TestCase):

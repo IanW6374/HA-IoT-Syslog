@@ -7,12 +7,12 @@ from pathlib import Path
 
 from aiohttp import ClientSession
 
-from hamd_syslog.config import load_settings
-from hamd_syslog.ingest import EventIngestor
-from hamd_syslog.receiver import SyslogListeners
-from hamd_syslog.storage import EventStore
-from hamd_syslog.tls import prepare_tls
-from hamd_syslog.web import WebInterface
+from iot_syslog.config import load_settings
+from iot_syslog.ingest import EventIngestor
+from iot_syslog.receiver import SyslogListeners
+from iot_syslog.storage import EventStore
+from iot_syslog.tls import prepare_tls
+from iot_syslog.web import WebInterface
 
 
 class IntegrationTests(unittest.IsolatedAsyncioTestCase):
@@ -35,7 +35,7 @@ class IntegrationTests(unittest.IsolatedAsyncioTestCase):
         self.store.close()
         self.temporary.cleanup()
 
-    async def test_iotmd_tls_frame_is_searchable_through_ingress_api(self):
+    async def test_iot_md_tls_frame_is_searchable_through_ingress_api(self):
         await self.listeners.start_tls(0, self.material.context)
         port = self.listeners.tls_server.sockets[0].getsockname()[1]
         client_context = ssl.create_default_context(cafile=str(self.material.ca_certificate))
@@ -59,7 +59,7 @@ class IntegrationTests(unittest.IsolatedAsyncioTestCase):
             self.material,
             30,
             ("localhost",),
-            Path(__file__).parents[1] / "hamd_syslog/rootfs/app/static",
+            Path(__file__).parents[1] / "iot_syslog/rootfs/app/static",
         )
         web_port = await web.start(0)
         try:

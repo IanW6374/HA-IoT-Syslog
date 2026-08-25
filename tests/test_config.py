@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from hamd_syslog.config import load_settings
+from iot_syslog.config import load_settings
 
 
 class ConfigTests(unittest.TestCase):

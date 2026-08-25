@@ -9,8 +9,8 @@ RUN apk add --no-cache \
 
 COPY rootfs /
 RUN chmod a+x \
-    /etc/services.d/hamd-syslog/run \
-    /etc/services.d/hamd-syslog/finish
+    /etc/services.d/iot-syslog/run \
+    /etc/services.d/iot-syslog/finish
 
 ARG BUILD_VERSION
 ARG BUILD_ARCH

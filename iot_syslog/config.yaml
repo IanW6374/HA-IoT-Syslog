@@ -1,8 +1,8 @@
 name: IoT Syslog
-version: "0.1.2"
-slug: hamd_syslog
+version: "0.2.0"
+slug: iot_syslog
 description: Encrypted, searchable syslog collection for IoT devices
-url: https://github.com/IanW6374/HA-IoT-Syslog/tree/main/hamd_syslog
+url: https://github.com/IanW6374/HA-IoT-Syslog/tree/main/iot_syslog
 arch:
   - aarch64
   - amd64
@@ -47,4 +47,4 @@ schema:
   retention_days: int(1,3650)
   purge_interval_hours: int(1,168)
   max_message_kib: int(1,1024)
-image: ghcr.io/ianw6374/hamd-syslog
+image: ghcr.io/ianw6374/iot-syslog

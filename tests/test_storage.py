@@ -3,8 +3,8 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from hamd_syslog.protocol import SyslogEvent
-from hamd_syslog.storage import EventStore
+from iot_syslog.protocol import SyslogEvent
+from iot_syslog.storage import EventStore
 
 
 def event(received_at, app_name="IoTMD", hostname="controller", message="started", severity=6):
@@ -40,7 +40,6 @@ class StorageTests(unittest.TestCase):
             [
                 event(now, message="device ready"),
                 event(now, app_name="IoTMD-Audit", message="login accepted"),
-                event(now, app_name="HAMD-Audit", message="legacy login accepted"),
             ]
         )
         device = self.store.search({"source": "device"})
@@ -48,7 +47,7 @@ class StorageTests(unittest.TestCase):
         self.assertEqual([item["message"] for item in device["events"]], ["device ready"])
         self.assertEqual(
             {item["message"] for item in audit["events"]},
-            {"login accepted", "legacy login accepted"},
+            {"login accepted"},
         )
 
     def test_combines_text_severity_and_hostname_filters(self):

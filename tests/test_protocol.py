@@ -1,10 +1,10 @@
 import unittest
 
-from hamd_syslog.protocol import OctetCountedFramer, parse_rfc5424
+from iot_syslog.protocol import OctetCountedFramer, parse_rfc5424
 
 
 class ProtocolTests(unittest.TestCase):
-    def test_parses_iotmd_device_event(self):
+    def test_parses_iot_md_device_event(self):
         event = parse_rfc5424(
             b"<131>1 2026-08-22T12:00:00Z controller IoTMD - - - Update failed",
             "tls",
@@ -17,7 +17,7 @@ class ProtocolTests(unittest.TestCase):
         self.assertEqual(event.message, "Update failed")
         self.assertEqual(event.transport, "tls")
 
-    def test_parses_iotmd_audit_event(self):
+    def test_parses_iot_md_audit_event(self):
         event = parse_rfc5424(
             b"<134>1 - field-unit IoTMD-Audit - - - portal login accepted",
             "udp",

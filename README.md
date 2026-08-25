@@ -1,8 +1,8 @@
-# IoT Syslog for Home Assistant
+# Home Assistant IoT Syslog
 
 IoT Syslog is a Home Assistant app (formerly called an add-on) for collecting, searching, and retaining logs from IoT devices, including the [IoT Modular Device](https://github.com/IanW6374/IoT-Modular-Device) project.
 
-It receives the protocol implemented by IoTMD and other standards-compliant senders:
+It receives the protocol implemented by IoT MD and other standards-compliant senders:
 
 - RFC 5424 syslog using the `local0` facility
 - encrypted TCP with TLS and RFC 6587 octet-counted framing on port 6514
@@ -24,6 +24,10 @@ It receives the protocol implemented by IoTMD and other standards-compliant send
 
 ## Install
 
+Version 0.2.0 uses the clean `iot_syslog` application identity. Remove an
+earlier installation before installing this version so Home Assistant cannot
+retain a replaced slug or application data.
+
 1. In Home Assistant, open **Settings > Apps > App store** (shown as **Add-ons** on older releases).
 2. Open the repository menu, choose **Repositories**, and add:
 
@@ -32,13 +36,13 @@ It receives the protocol implemented by IoTMD and other standards-compliant send
 3. Install **IoT Syslog**.
 4. Read the app documentation before starting it, especially the TLS server-name requirement.
 
-Detailed setup and option descriptions are in [hamd_syslog/DOCS.md](hamd_syslog/DOCS.md).
+Detailed setup and option descriptions are in [iot_syslog/DOCS.md](iot_syslog/DOCS.md).
 
-For IoTMD deployments using [Home Assistant IoT Certificate Authority](https://github.com/IanW6374/HA-IoT-Certificate-Authority), the recommended production setup is `custom` TLS mode with that CA's existing Home Assistant certificate and key mounted read-only from `/ssl`. The app does not copy or re-enrol the private key.
+For IoT MD deployments using [Home Assistant IoT Certificate Authority](https://github.com/IanW6374/HA-IoT-Certificate-Authority), the recommended production setup is `custom` TLS mode with that CA's existing Home Assistant certificate and key mounted read-only from `/ssl`. The app does not copy or re-enrol the private key.
 
 ## Security model
 
-TLS provides encryption in transit and authenticates the server to each IoTMD device. IoTMD validates the issuing CA and checks that its configured syslog host is present in the certificate's subject alternative names. The current IoTMD client does not present a client certificate, so this is server-authenticated TLS rather than mutual TLS.
+TLS provides encryption in transit and authenticates the server to each IoT MD device. IoT MD validates the issuing CA and checks that its configured syslog host is present in the certificate's subject alternative names. The current IoT MD client does not present a client certificate, so this is server-authenticated TLS rather than mutual TLS.
 
 Generated private keys remain in the app's persistent `/data/tls` directory and are never offered for download. The search interface is exposed only through authenticated Home Assistant ingress. UDP is available for compatibility but is unencrypted and disabled by default.
 
@@ -49,7 +53,7 @@ Do not commit production certificates, private keys, databases, or exported logs
 Run the unit suite from the repository root:
 
 ```sh
-PYTHONPATH=hamd_syslog/rootfs/app python3 -m unittest discover -s tests -v
+PYTHONPATH=iot_syslog/rootfs/app python3 -m unittest discover -s tests -v
 ```
 
 The GitHub workflow builds and publishes multi-architecture images using the current Home Assistant builder actions.
