@@ -12,7 +12,7 @@ ROOT = Path(__file__).parents[1]
 class StaticInterfaceTests(unittest.TestCase):
     def test_patch_versions_are_consistent(self):
         config = yaml.safe_load((ROOT / "iot_syslog/config.yaml").read_text(encoding="utf-8"))
-        self.assertEqual(config["version"], "0.2.0")
+        self.assertEqual(config["version"], "0.2.1")
         self.assertEqual(iot_syslog.__version__, config["version"])
         self.assertEqual(config["name"], "IoT Syslog")
         self.assertEqual(config["panel_title"], "IoT Syslog")

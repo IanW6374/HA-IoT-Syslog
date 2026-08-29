@@ -1,5 +1,5 @@
 name: IoT Syslog
-version: "0.2.0"
+version: "0.2.1"
 slug: iot_syslog
 description: Encrypted, searchable syslog collection for IoT devices
 url: https://github.com/IanW6374/HA-IoT-Syslog/tree/main/iot_syslog

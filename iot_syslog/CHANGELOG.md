@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.2.1
+
 - Align the ingress UI with the IoT app family by separating Overview, Events
   and Settings into real routes with a persistent branded tab bar.
 - Add a read-only active-configuration summary while retaining Home Assistant
