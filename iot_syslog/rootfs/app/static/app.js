@@ -8,6 +8,14 @@ const rows = document.querySelector("#event-rows");
 const errorBox = document.querySelector("#error");
 let eventRequestSequence = 0;
 
+const activePage = document.body.dataset.page || "overview";
+for (const section of document.querySelectorAll("[data-page]")) section.classList.toggle("hidden", section.dataset.page !== activePage);
+for (const link of document.querySelectorAll("[data-page-link]")) {
+  const active = link.dataset.pageLink === activePage;
+  link.classList.toggle("active", active);
+  if (active) link.setAttribute("aria-current", "page");
+}
+
 function endpoint(path) {
   return new URL(path, window.location.href);
 }
@@ -121,6 +129,10 @@ async function loadSummary() {
     document.querySelector("#retention").textContent = `${status.retention_days} days`;
     document.querySelector("#tls-state").textContent = status.tls ? "Enabled" : "Disabled";
     document.querySelector("#dropped-count").textContent = status.dropped.toLocaleString();
+    document.querySelector("#settings-retention").textContent = `${status.retention_days} days`;
+    document.querySelector("#settings-tls").textContent = status.tls ? "Enabled" : "Disabled";
+    document.querySelector("#settings-server-names").textContent = status.tls_server_names.join(", ") || "Not configured";
+    document.querySelector("#settings-stored").textContent = status.stored.toLocaleString();
     document.querySelector("#ca-download").classList.toggle("hidden", !status.ca_download);
     if (status.tls) {
       const details = document.querySelector("#tls-details");

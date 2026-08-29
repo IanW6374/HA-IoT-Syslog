@@ -22,6 +22,12 @@ class StaticInterfaceTests(unittest.TestCase):
         self.assertIn('<header class="topbar">', page)
         self.assertIn('<span class="brand-mark">SL</span><span>IoT Syslog</span>', page)
         self.assertIn('<nav aria-label="Primary">', page)
+        self.assertIn('data-page-link="overview"', page)
+        self.assertIn('data-page-link="events"', page)
+        self.assertIn('data-page-link="settings"', page)
+        self.assertIn('data-page="overview"', page)
+        self.assertIn('data-page="events"', page)
+        self.assertIn('data-page="settings"', page)
 
     def test_event_table_auto_refreshes_without_resetting_query_or_offset(self):
         script = (ROOT / "iot_syslog/rootfs/app/static/app.js").read_text(encoding="utf-8")

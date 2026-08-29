@@ -80,6 +80,8 @@ class WebInterface:
     async def start(self, port: int) -> int:
         app = web.Application(middlewares=[security_headers], client_max_size=1024 * 1024)
         app.router.add_get("/", self.index)
+        app.router.add_get("/events", self.index)
+        app.router.add_get("/settings", self.index)
         app.router.add_get("/app.js", self.javascript)
         app.router.add_get("/styles.css", self.styles)
         app.router.add_get("/api/events", self.events)
@@ -95,8 +97,12 @@ class WebInterface:
         sockets = self.site._server.sockets if self.site._server else []
         return int(sockets[0].getsockname()[1]) if sockets else port
 
-    async def index(self, _request: web.Request) -> web.FileResponse:
-        return web.FileResponse(self.static_dir / "index.html")
+    async def index(self, request: web.Request) -> web.Response:
+        page = request.path.strip("/") or "overview"
+        body = (self.static_dir / "index.html").read_text().replace(
+            '<body>', '<body data-page="' + page + '">', 1
+        )
+        return web.Response(text=body, content_type="text/html")
 
     async def javascript(self, _request: web.Request) -> web.FileResponse:
         return web.FileResponse(self.static_dir / "app.js")

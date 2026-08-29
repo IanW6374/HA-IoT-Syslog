@@ -8,16 +8,16 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href=""><span class="brand-mark">SL</span><span>IoT Syslog</span></a>
+    <a class="brand" href="./"><span class="brand-mark">SL</span><span>IoT Syslog</span></a>
     <nav aria-label="Primary">
-      <a href="#overview">Overview</a>
-      <a href="#query">Search</a>
-      <a href="#events">Events</a>
+      <a data-page-link="overview" href="./">Overview</a>
+      <a data-page-link="events" href="events">Events</a>
+      <a data-page-link="settings" href="settings">Settings</a>
     </nav>
   </header>
 
   <main>
-    <section id="overview" class="hero split">
+    <div data-page="overview"><section id="overview" class="hero split">
       <div>
         <p class="eyebrow">Home Assistant</p>
         <h1>Syslog operations at a glance</h1>
@@ -25,7 +25,6 @@
       </div>
     <div class="top-actions">
       <a id="ca-download" class="button secondary hidden" href="api/ca.der" download>Download IoT Syslog CA (.der)</a>
-      <button id="export" class="button secondary" type="button">Export visible results</button>
     </div>
     </section>
     <section class="status-grid" aria-label="Receiver status">
@@ -35,8 +34,9 @@
       <div class="status-card"><span>Dropped</span><strong id="dropped-count">—</strong></div>
     </section>
 
-    <section id="tls-details" class="notice hidden" aria-live="polite"></section>
+    <section id="tls-details" class="notice hidden" aria-live="polite"></section></div>
 
+    <div data-page="events"><section class="hero split"><div><p class="eyebrow">Events</p><h1>Search syslog events</h1><p>Filter device and audit events by sender, application, severity, transport or time.</p></div><button id="export" class="button secondary" type="button">Export visible results</button></section>
     <section id="query" class="panel filters" aria-labelledby="filter-heading">
       <div class="panel-heading">
         <div>
@@ -87,7 +87,8 @@
         <span id="page">Page 1</span>
         <button id="next" class="button secondary" type="button">Next</button>
       </nav>
-    </section>
+    </section></div>
+    <div data-page="settings"><section class="hero"><p class="eyebrow">Configuration</p><h1>Syslog settings</h1><p>Runtime settings are managed from the Home Assistant app configuration.</p></section><section class="panel detail-list"><div class="panel-heading"><div><p class="eyebrow">Receiver</p><h2>Active configuration</h2></div></div><dl><dt>Retention period</dt><dd id="settings-retention">—</dd><dt>TLS listener</dt><dd id="settings-tls">—</dd><dt>Accepted server names</dt><dd id="settings-server-names">—</dd><dt>Stored events</dt><dd id="settings-stored">—</dd></dl><p class="muted">Change retention, listener and certificate paths in Settings → Apps → IoT Syslog → Configuration, then restart the app.</p></section></div>
   </main>
   <script src="app.js" defer></script>
 </body>

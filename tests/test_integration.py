@@ -78,6 +78,11 @@ class IntegrationTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(response.status, 200)
                     self.assertEqual(response.content_type, "application/pkix-cert")
                     self.assertGreater(len(await response.read()), 500)
+                for path, page in (("/", "overview"), ("/events", "events"), ("/settings", "settings")):
+                    async with session.get(f"http://127.0.0.1:{web_port}{path}") as response:
+                        self.assertEqual(response.status, 200)
+                        html = await response.text()
+                        self.assertIn(f'<body data-page="{page}">', html)
         finally:
             await web.close()
 
