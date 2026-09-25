@@ -8,6 +8,8 @@
   --accent: #087e8b;
   --accent-strong: #05606a;
   --danger: #b53333;
+  --good: #16804d;
+  --soft: #f6f9fa;
   --shadow: 0 12px 34px rgba(17, 42, 52, 0.08);
 }
 
@@ -78,9 +80,18 @@ input:focus, select:focus { outline: 2px solid color-mix(in srgb, var(--accent),
 .button { display: inline-flex; min-height: 40px; align-items: center; justify-content: center; padding: 8px 14px; }
 .primary { justify-self: start; background: var(--accent); color: white; }
 .primary:hover { background: var(--accent-strong); }
-.secondary { border: 1px solid var(--border); background: var(--panel); color: var(--text); }
+.secondary { border: 1px solid var(--accent); background: transparent; color: var(--accent); }
+.secondary:hover { border-color: var(--accent-strong); background: color-mix(in srgb, var(--accent) 9%, transparent); color: var(--accent-strong); }
 .text-button { padding: 5px; background: transparent; color: var(--accent); }
-.button:disabled { cursor: default; opacity: .45; }
+.button:disabled { cursor: not-allowed; border-color: #d3dde1; background: #e7ecee; color: #7b8a91; opacity: 1; }
+.button.compact { min-height: 34px; padding: 6px 10px; font-size: 13px; }
+.actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.action-controls { display: flex; justify-content: flex-end; gap: 9px; margin-left: auto; }
+.portal-status { flex: 1 1 20rem; margin: 0; padding: 10px 13px; border: 1px solid #91ccd2; border-radius: 9px; background: #f3fbfc; color: var(--accent-strong); }
+.portal-status:empty { display: none; }
+.portal-status.success { border-color: var(--good); background: #f4fbf7; color: var(--good); }
+.portal-status.error { border-color: var(--danger); background: #fff7f7; color: var(--danger); }
+.hero + .portal-status { margin: -12px 0 20px; }
 
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; table-layout: fixed; }
@@ -95,7 +106,7 @@ th:nth-child(4) { width: 100px; } th:nth-child(5) { width: 85px; }
 .severity-4 { background: #fff0c2; color: #8a5700; }
 .severity-7 { background: #e6e7fb; color: #4641a5; }
 .count { color: var(--muted); }
-.result-summary { display: flex; flex-wrap: wrap; justify-content: end; gap: 6px 14px; text-align: right; }
+.result-summary { display: flex; flex-wrap: wrap; align-items: center; justify-content: end; gap: 6px 14px; text-align: right; }
 .empty, .error { padding: 28px; text-align: center; color: var(--muted); }
 .error { margin-bottom: 12px; border-radius: 9px; background: #fee4e2; color: var(--danger); }
 .pagination { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 16px; }
@@ -106,7 +117,11 @@ th:nth-child(4) { width: 100px; } th:nth-child(5) { width: 85px; }
 .detail-list dd { margin: 0; overflow-wrap: anywhere; }
 
 @media (prefers-color-scheme: dark) {
-  :root { --bg: #10181c; --panel: #182329; --text: #edf5f7; --muted: #a8b8bf; --border: #304149; --accent: #36b7c5; --accent-strong: #29949f; --shadow: 0 12px 34px rgba(0,0,0,.24); }
+  :root { --bg: #10181c; --panel: #182329; --text: #edf5f7; --muted: #a8b8bf; --border: #304149; --accent: #36b7c5; --accent-strong: #29949f; --good: #72d9a5; --soft: #111b20; --shadow: 0 12px 34px rgba(0,0,0,.24); }
+  .portal-status { background: #162e34; }
+  .portal-status.success { background: #172d24; }
+  .portal-status.error { background: #341f20; }
+  .button:disabled { border-color: #3a474d; background: #263238; color: #84939a; }
   .badge { background: #303c46; color: #d8e0e5; }
   .severity-0, .severity-1, .severity-2, .severity-3 { background: #5c2626; color: #ffb4ae; }
   .severity-4 { background: #52421d; color: #ffda75; }
@@ -125,6 +140,9 @@ th:nth-child(4) { width: 100px; } th:nth-child(5) { width: 85px; }
   .split { align-items: flex-start; flex-direction: column; }
   .top-actions { justify-content: stretch; }
   .top-actions > * { flex: 1; }
+  .actions, .action-controls { align-items: stretch; flex-direction: column; width: 100%; }
+  .action-controls { margin-left: 0; }
+  .action-controls .button { width: 100%; }
   .filter-grid { grid-template-columns: 1fr; }
   .panel { padding: 15px; }
   th:nth-child(1) { width: 155px; }

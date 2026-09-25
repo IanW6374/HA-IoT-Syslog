@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 0.2.2
+
+- Align portal actions and feedback with the IoT MD interaction model.
+- Refresh receiver status and event results in place with visible busy, success
+  and error states instead of page reloads.
+- Group filter actions consistently at the bottom-right and make export,
+  pagination and refresh controls reflect their current availability.
+- Stop polling event data while another page is open and avoid duplicate filter
+  values when receiver status is refreshed.
+
 ## 0.2.1
 
 - Align the ingress UI with the IoT app family by separating Overview, Events

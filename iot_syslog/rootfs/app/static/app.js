@@ -6,7 +6,10 @@ const state = { offset: 0, total: 0, query: new URLSearchParams() };
 const form = document.querySelector("#filters");
 const rows = document.querySelector("#event-rows");
 const errorBox = document.querySelector("#error");
+const searchButton = document.querySelector("#search");
+const exportButton = document.querySelector("#export");
 let eventRequestSequence = 0;
+let eventRequestInFlight = false;
 
 const activePage = document.body.dataset.page || "overview";
 for (const section of document.querySelectorAll("[data-page]")) section.classList.toggle("hidden", section.dataset.page !== activePage);
@@ -23,6 +26,32 @@ function endpoint(path) {
 function showError(message) {
   errorBox.textContent = message;
   errorBox.classList.toggle("hidden", !message);
+}
+
+function setPortalStatus(element, stateName, message) {
+  if (!element) return;
+  element.className = `portal-status${stateName ? ` ${stateName}` : ""}`;
+  element.textContent = message || "";
+}
+
+function setSummaryStatus(stateName, message) {
+  for (const element of document.querySelectorAll("[data-summary-status]")) {
+    setPortalStatus(element, stateName, message);
+  }
+}
+
+function setBusy(button, busy, label) {
+  if (!button) return;
+  if (busy) {
+    button.dataset.idleLabel = button.textContent;
+    button.textContent = label;
+    button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+  } else {
+    button.textContent = button.dataset.idleLabel || button.textContent;
+    button.disabled = false;
+    button.removeAttribute("aria-busy");
+  }
 }
 
 function displayTime(value) {
@@ -72,9 +101,13 @@ function renderEvents(events) {
   document.querySelector("#empty").classList.toggle("hidden", events.length !== 0);
 }
 
-async function loadEvents() {
+async function loadEvents({ force = false, trigger = null, feedback = "" } = {}) {
+  if (eventRequestInFlight && !force) return;
   const requestSequence = ++eventRequestSequence;
+  eventRequestInFlight = true;
   showError("");
+  setBusy(trigger, true, trigger === searchButton ? "Searching…" : "Refreshing…");
+  document.querySelector("#refresh-state").textContent = "Refreshing…";
   const url = endpoint("api/events");
   for (const [key, value] of state.query) url.searchParams.set(key, value);
   url.searchParams.set("limit", PAGE_SIZE);
@@ -92,29 +125,62 @@ async function loadEvents() {
     document.querySelector("#page").textContent = `Page ${Math.floor(state.offset / PAGE_SIZE) + 1}`;
     document.querySelector("#previous").disabled = state.offset === 0;
     document.querySelector("#next").disabled = state.offset + PAGE_SIZE >= state.total;
+    exportButton.disabled = state.total === 0;
     document.querySelector("#refresh-state").textContent = `Updated ${new Date().toLocaleTimeString()}`;
+    if (feedback) {
+      const count = `${result.total.toLocaleString()} event${result.total === 1 ? "" : "s"}`;
+      setPortalStatus(document.querySelector("#filter-status"), "success", `${feedback} — ${count}`);
+    }
   } catch (error) {
     if (requestSequence !== eventRequestSequence) return;
     showError(`Could not load events: ${error.message}`);
     document.querySelector("#refresh-state").textContent = "Refresh failed";
+    if (feedback) setPortalStatus(document.querySelector("#filter-status"), "error", "Could not update results.");
+  } finally {
+    setBusy(trigger, false);
+    if (requestSequence === eventRequestSequence) eventRequestInFlight = false;
   }
 }
 
 function refreshVisibleEvents() {
-  if (document.visibilityState === "visible") loadEvents();
+  if (activePage === "events" && document.visibilityState === "visible") loadEvents();
 }
 
-function addOptions(id, values) {
+function replaceOptions(id, values) {
   const select = document.querySelector(id);
+  const selected = select.value;
+  while (select.options.length > 1) select.remove(1);
   for (const value of values) {
     const option = document.createElement("option");
     option.value = value;
     option.textContent = value;
     select.append(option);
   }
+  if ([...select.options].some((option) => option.value === selected)) select.value = selected;
 }
 
-async function loadSummary() {
+function applyStatus(status) {
+  document.querySelector("#stored-count").textContent = status.stored.toLocaleString();
+  document.querySelector("#retention").textContent = `${status.retention_days} days`;
+  document.querySelector("#tls-state").textContent = status.tls ? "Enabled" : "Disabled";
+  document.querySelector("#dropped-count").textContent = status.dropped.toLocaleString();
+  document.querySelector("#settings-retention").textContent = `${status.retention_days} days`;
+  document.querySelector("#settings-tls").textContent = status.tls ? "Enabled" : "Disabled";
+  document.querySelector("#settings-server-names").textContent = status.tls_server_names.join(", ") || "Not configured";
+  document.querySelector("#settings-stored").textContent = status.stored.toLocaleString();
+  document.querySelector("#ca-download").classList.toggle("hidden", !status.ca_download);
+  const details = document.querySelector("#tls-details");
+  details.classList.toggle("hidden", !status.tls);
+  if (status.tls) {
+    const mode = status.tls_generated ? "A dedicated local CA generated by this app is active." : "A custom server certificate is active.";
+    const fingerprint = status.tls_ca_sha256 ? ` CA SHA-256: ${status.tls_ca_sha256}.` : "";
+    details.textContent = `${mode} Configure each sender with one of these exact server names: ${status.tls_server_names.join(", ")}.${fingerprint}`;
+  }
+}
+
+async function loadSummary({ trigger = null, announce = false } = {}) {
+  setBusy(trigger, true, "Refreshing…");
+  if (announce) setSummaryStatus("", "Refreshing receiver status…");
   try {
     const [facetsResponse, statusResponse] = await Promise.all([
       fetch(endpoint("api/facets")), fetch(endpoint("api/status")),
@@ -122,27 +188,19 @@ async function loadSummary() {
     if (!facetsResponse.ok || !statusResponse.ok) throw new Error("status request failed");
     const facets = await facetsResponse.json();
     const status = await statusResponse.json();
-    addOptions("#hostname", facets.hostnames);
-    addOptions("#app", facets.applications);
-    addOptions("#transport", facets.transports);
+    replaceOptions("#hostname", facets.hostnames);
+    replaceOptions("#app", facets.applications);
+    replaceOptions("#transport", facets.transports);
     document.querySelector("#stored-count").textContent = facets.count.toLocaleString();
-    document.querySelector("#retention").textContent = `${status.retention_days} days`;
-    document.querySelector("#tls-state").textContent = status.tls ? "Enabled" : "Disabled";
-    document.querySelector("#dropped-count").textContent = status.dropped.toLocaleString();
-    document.querySelector("#settings-retention").textContent = `${status.retention_days} days`;
-    document.querySelector("#settings-tls").textContent = status.tls ? "Enabled" : "Disabled";
-    document.querySelector("#settings-server-names").textContent = status.tls_server_names.join(", ") || "Not configured";
-    document.querySelector("#settings-stored").textContent = status.stored.toLocaleString();
-    document.querySelector("#ca-download").classList.toggle("hidden", !status.ca_download);
-    if (status.tls) {
-      const details = document.querySelector("#tls-details");
-      const mode = status.tls_generated ? "A dedicated local CA generated by this app is active." : "A custom server certificate is active.";
-      const fingerprint = status.tls_ca_sha256 ? ` CA SHA-256: ${status.tls_ca_sha256}.` : "";
-      details.textContent = `${mode} Configure each sender with one of these exact server names: ${status.tls_server_names.join(", ")}.${fingerprint}`;
-      details.classList.remove("hidden");
-    }
+    applyStatus(status);
+    if (announce) setSummaryStatus("success", `Receiver status updated at ${new Date().toLocaleTimeString()}.`);
   } catch (error) {
-    showError(`Could not load receiver status: ${error.message}`);
+    if (activePage === "events") {
+      setPortalStatus(document.querySelector("#filter-status"), "error", `Could not load filter options: ${error.message}`);
+    }
+    else setSummaryStatus("error", `Could not load receiver status: ${error.message}`);
+  } finally {
+    setBusy(trigger, false);
   }
 }
 
@@ -151,8 +209,7 @@ async function refreshStatus() {
     const response = await fetch(endpoint("api/status"));
     if (!response.ok) return;
     const status = await response.json();
-    document.querySelector("#stored-count").textContent = status.stored.toLocaleString();
-    document.querySelector("#dropped-count").textContent = status.dropped.toLocaleString();
+    applyStatus(status);
   } catch (_error) {
     // The next refresh or user query will report a persistent connection problem.
   }
@@ -167,26 +224,33 @@ form.addEventListener("submit", (event) => {
     else state.query.set(key, value);
   }
   state.offset = 0;
-  loadEvents();
+  loadEvents({ force: true, trigger: searchButton, feedback: "Filters applied" });
 });
 
 document.querySelector("#reset").addEventListener("click", () => {
-  form.reset(); state.query = new URLSearchParams(); state.offset = 0; loadEvents();
+  form.reset(); state.query = new URLSearchParams(); state.offset = 0;
+  loadEvents({ force: true, trigger: document.querySelector("#reset"), feedback: "Filters cleared" });
 });
 document.querySelector("#previous").addEventListener("click", () => {
-  state.offset = Math.max(0, state.offset - PAGE_SIZE); loadEvents();
+  state.offset = Math.max(0, state.offset - PAGE_SIZE); loadEvents({ force: true });
 });
 document.querySelector("#next").addEventListener("click", () => {
-  state.offset += PAGE_SIZE; loadEvents();
+  state.offset += PAGE_SIZE; loadEvents({ force: true });
+});
+document.querySelector("#refresh-events").addEventListener("click", (event) => {
+  loadEvents({ force: true, trigger: event.currentTarget });
 });
 document.querySelector("#export").addEventListener("click", () => {
   const url = endpoint("api/export.csv");
   for (const [key, value] of state.query) url.searchParams.set(key, value);
   window.location.assign(url);
 });
+for (const button of document.querySelectorAll("[data-summary-refresh]")) {
+  button.addEventListener("click", () => loadSummary({ trigger: button, announce: true }));
+}
 
 loadSummary();
-loadEvents();
-window.setInterval(refreshStatus, 30000);
+if (activePage === "events") loadEvents({ force: true });
+if (activePage !== "events") window.setInterval(refreshStatus, 30000);
 window.setInterval(refreshVisibleEvents, EVENT_REFRESH_INTERVAL_MS);
 document.addEventListener("visibilitychange", refreshVisibleEvents);

@@ -24,9 +24,11 @@
         <p>Encrypted collection, search and retention for IoT device and audit events.</p>
       </div>
     <div class="top-actions">
+      <button class="button secondary" data-summary-refresh type="button">Refresh status</button>
       <a id="ca-download" class="button secondary hidden" href="api/ca.der" download>Download IoT Syslog CA (.der)</a>
     </div>
     </section>
+    <div class="portal-status" data-summary-status role="status" aria-live="polite"></div>
     <section class="status-grid" aria-label="Receiver status">
       <div class="status-card"><span>Stored</span><strong id="stored-count">—</strong></div>
       <div class="status-card"><span>Retention</span><strong id="retention">—</strong></div>
@@ -36,14 +38,13 @@
 
     <section id="tls-details" class="notice hidden" aria-live="polite"></section></div>
 
-    <div data-page="events"><section class="hero split"><div><p class="eyebrow">Events</p><h1>Search syslog events</h1><p>Filter device and audit events by sender, application, severity, transport or time.</p></div><button id="export" class="button secondary" type="button">Export visible results</button></section>
+    <div data-page="events"><section class="hero split"><div><p class="eyebrow">Events</p><h1>Search syslog events</h1><p>Filter device and audit events by sender, application, severity, transport or time.</p></div><button id="export" class="button secondary" type="button" disabled>Export visible results</button></section>
     <section id="query" class="panel filters" aria-labelledby="filter-heading">
       <div class="panel-heading">
         <div>
           <p class="eyebrow">Query</p>
           <h2 id="filter-heading">Find events</h2>
         </div>
-        <button id="reset" class="text-button" type="button">Clear filters</button>
       </div>
       <form id="filters">
         <label class="search-field">
@@ -59,7 +60,13 @@
           <label><span>From</span><input name="start" type="datetime-local"></label>
           <label><span>To</span><input name="end" type="datetime-local"></label>
         </div>
-        <button class="button primary" type="submit">Search</button>
+        <div class="actions">
+          <span id="filter-status" class="portal-status" role="status" aria-live="polite"></span>
+          <div class="action-controls">
+            <button id="reset" class="button secondary" type="button">Clear filters</button>
+            <button id="search" class="button primary" type="submit">Search</button>
+          </div>
+        </div>
       </form>
     </section>
 
@@ -72,6 +79,7 @@
         <div class="result-summary">
           <span id="refresh-state" class="count" aria-live="polite">Refreshing…</span>
           <span id="result-count" class="count">Loading…</span>
+          <button id="refresh-events" class="button secondary compact" type="button">Refresh results</button>
         </div>
       </div>
       <div id="error" class="error hidden" role="alert"></div>
@@ -88,7 +96,7 @@
         <button id="next" class="button secondary" type="button">Next</button>
       </nav>
     </section></div>
-    <div data-page="settings"><section class="hero"><p class="eyebrow">Configuration</p><h1>Syslog settings</h1><p>Runtime settings are managed from the Home Assistant app configuration.</p></section><section class="panel detail-list"><div class="panel-heading"><div><p class="eyebrow">Receiver</p><h2>Active configuration</h2></div></div><dl><dt>Retention period</dt><dd id="settings-retention">—</dd><dt>TLS listener</dt><dd id="settings-tls">—</dd><dt>Accepted server names</dt><dd id="settings-server-names">—</dd><dt>Stored events</dt><dd id="settings-stored">—</dd></dl><p class="muted">Change retention, listener and certificate paths in Settings → Apps → IoT Syslog → Configuration, then restart the app.</p></section></div>
+    <div data-page="settings"><section class="hero split"><div><p class="eyebrow">Configuration</p><h1>Syslog settings</h1><p>Runtime settings are managed from the Home Assistant app configuration.</p></div><div class="top-actions"><button class="button secondary" data-summary-refresh type="button">Refresh status</button></div></section><div class="portal-status" data-summary-status role="status" aria-live="polite"></div><section class="panel detail-list"><div class="panel-heading"><div><p class="eyebrow">Receiver</p><h2>Active configuration</h2></div></div><dl><dt>Retention period</dt><dd id="settings-retention">—</dd><dt>TLS listener</dt><dd id="settings-tls">—</dd><dt>Accepted server names</dt><dd id="settings-server-names">—</dd><dt>Stored events</dt><dd id="settings-stored">—</dd></dl><p class="muted">Change retention, listener and certificate paths in Settings → Apps → IoT Syslog → Configuration, then restart the app.</p></section></div>
   </main>
   <script src="app.js" defer></script>
 </body>
