@@ -12,7 +12,7 @@ ROOT = Path(__file__).parents[1]
 class StaticInterfaceTests(unittest.TestCase):
     def test_patch_versions_are_consistent(self):
         config = yaml.safe_load((ROOT / "iot_syslog/config.yaml").read_text(encoding="utf-8"))
-        self.assertEqual(config["version"], "0.2.2")
+        self.assertEqual(config["version"], "0.3.0")
         self.assertEqual(iot_syslog.__version__, config["version"])
         self.assertEqual(config["name"], "IoT Syslog")
         self.assertEqual(config["panel_title"], "IoT Syslog")
@@ -20,7 +20,8 @@ class StaticInterfaceTests(unittest.TestCase):
     def test_interface_uses_shared_iot_brand_shell(self):
         page = (ROOT / "iot_syslog/rootfs/app/static/index.html").read_text(encoding="utf-8")
         self.assertIn('<header class="topbar">', page)
-        self.assertIn('<span class="brand-mark">SL</span><span>IoT Syslog</span>', page)
+        self.assertIn('<span class="brand-mark">IoT<br>SL</span><span>IoT Syslog</span>', page)
+        self.assertEqual(page.count('class="status-card" href='), 4)
         self.assertIn('<nav aria-label="Primary">', page)
         self.assertIn('data-page-link="overview"', page)
         self.assertIn('data-page-link="events"', page)

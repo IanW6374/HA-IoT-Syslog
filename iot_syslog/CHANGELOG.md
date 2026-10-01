@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.3.0
+
+- Adopt the shared IoT portal shell, brand mark, typography, spacing and panel hierarchy.
+- Make Overview metrics direct links to the relevant Events or Settings page.
+- Standardise responsive cards and interaction feedback with IoT-MD Management.
+
 ## 0.2.2
 
 - Align portal actions and feedback with the IoT MD interaction model.

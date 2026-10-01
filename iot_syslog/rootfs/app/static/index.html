@@ -8,7 +8,7 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="./"><span class="brand-mark">SL</span><span>IoT Syslog</span></a>
+    <a class="brand" href="./"><span class="brand-mark">IoT<br>SL</span><span>IoT Syslog</span></a>
     <nav aria-label="Primary">
       <a data-page-link="overview" href="./">Overview</a>
       <a data-page-link="events" href="events">Events</a>
@@ -30,10 +30,10 @@
     </section>
     <div class="portal-status" data-summary-status role="status" aria-live="polite"></div>
     <section class="status-grid" aria-label="Receiver status">
-      <div class="status-card"><span>Stored</span><strong id="stored-count">—</strong></div>
-      <div class="status-card"><span>Retention</span><strong id="retention">—</strong></div>
-      <div class="status-card"><span>TLS</span><strong id="tls-state">—</strong></div>
-      <div class="status-card"><span>Dropped</span><strong id="dropped-count">—</strong></div>
+      <a class="status-card" href="events"><span>Stored events</span><strong id="stored-count">—</strong></a>
+      <a class="status-card" href="settings"><span>Retention</span><strong id="retention">—</strong></a>
+      <a class="status-card" href="settings"><span>TLS listener</span><strong id="tls-state">—</strong></a>
+      <a class="status-card" href="events"><span>Dropped events</span><strong id="dropped-count">—</strong></a>
     </section>
 
     <section id="tls-details" class="notice hidden" aria-live="polite"></section></div>
