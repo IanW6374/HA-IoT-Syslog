@@ -150,12 +150,20 @@ th:nth-child(4) { width: 100px; } th:nth-child(5) { width: 85px; }
 }
 
 /* Home Assistant-aligned density and type scale. */
-body { font-size: 14px; line-height: 1.5; }
-main { width: min(1440px, calc(100% - 32px)); padding: 32px 0 56px; }
-.hero { margin-bottom: 22px; }
-.hero h1 { font-size: clamp(1.9rem, 4vw, 2.75rem); line-height: 1.08; letter-spacing: -.03em; }
+body { font: 14px/1.45 Roboto, "Noto Sans", Arial, sans-serif; }
+.topbar { min-height: 56px; padding: 8px 16px; }
+.brand-mark { width: 34px; height: 34px; border-radius: 8px; font-size: .65rem; }
+.topbar nav a { padding: 7px 9px; font-size: .9rem; }
+main { width: min(1200px, calc(100% - 32px)); padding: 24px 0 40px; }
+.hero { margin-bottom: 18px; }
+.hero h1 { font-size: clamp(1.75rem, 3vw, 2rem); line-height: 1.15; letter-spacing: -.02em; }
 .hero p:not(.eyebrow) { font-size: 1rem; }
-.panel { padding: clamp(18px, 2.5vw, 24px); }
-h2 { font-size: 1.25rem; }
-.status-card { padding: 18px; }
-.status-card strong { font-size: 1.55rem; }
+.panel, .status-card { border-radius: 12px; box-shadow: 0 2px 8px rgba(17, 42, 52, .07); }
+.panel { padding: 16px; }
+h2 { font-size: 1.15rem; }
+.section-head { margin-bottom: 12px; }
+.status-grid { gap: 12px; margin-bottom: 16px; }
+.status-card { padding: 16px; }
+.status-card strong { font-size: 1.4rem; }
+.button, button { padding: 8px 12px; border-radius: 7px; }
+input, select { padding: 9px 10px; border-radius: 7px; }
