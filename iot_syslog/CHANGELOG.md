@@ -1,6 +1,9 @@
 # Changelog
 
-## Unreleased
+## 0.3.1
+
+- Align the portal type scale, heading sizes, panel density and page spacing
+  more closely with the Home Assistant add-on experience.
 
 ## 0.3.0
 
