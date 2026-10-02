@@ -150,7 +150,7 @@ th:nth-child(4) { width: 100px; } th:nth-child(5) { width: 85px; }
 }
 
 /* Home Assistant-aligned density and type scale. */
-body { font: 14px/1.45 Roboto, "Noto Sans", Arial, sans-serif; }
+body { font: 14px/1.45 Roboto, Noto, sans-serif; -moz-osx-font-smoothing: grayscale; -webkit-font-smoothing: antialiased; }
 .topbar { min-height: 56px; padding: 8px 16px; }
 .brand-mark { width: 34px; height: 34px; border-radius: 8px; font-size: .65rem; }
 .topbar nav a { padding: 7px 9px; font-size: .9rem; }
