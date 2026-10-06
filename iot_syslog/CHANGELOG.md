@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+## 0.3.3
+
+- Align form labels and single-line controls with the IoT portals' shared
+  42 px height, including search fields. Preserve taller text areas and lists.
+
 ## 0.3.2
 
 - Match Home Assistant's compact 14 px Roboto type scale, 32 px maximum page

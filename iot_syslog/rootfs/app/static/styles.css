@@ -167,3 +167,10 @@ h2 { font-size: 1.15rem; }
 .status-card strong { font-size: 1.4rem; }
 .button, button { padding: 8px 12px; border-radius: 7px; }
 input, select { padding: 9px 10px; border-radius: 7px; }
+/* Shared form controls: equal heights without stretching fields beside help text. */
+label{align-content:start;grid-auto-rows:max-content;min-width:0}
+input:not([type="checkbox"]):not([type="radio"]),select:not([multiple]):not([size]){height:42px;min-height:42px;line-height:1.4}
+textarea,select[multiple],select[size]{height:auto}
+.check{border:0;background:transparent;padding:0;min-height:42px;align-self:end;align-items:center}
+input[type="checkbox"],input[type="radio"]{width:16px;height:16px;min-height:16px;padding:0;margin:0;flex:0 0 16px}
+.search-field input{height:42px;font-size:inherit}

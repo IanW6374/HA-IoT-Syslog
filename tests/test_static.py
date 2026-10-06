@@ -10,9 +10,16 @@ ROOT = Path(__file__).parents[1]
 
 
 class StaticInterfaceTests(unittest.TestCase):
+    def test_form_controls_share_portal_alignment_and_height(self):
+        css = (ROOT / 'iot_syslog/rootfs/app/static/styles.css').read_text()
+        self.assertIn('align-content:start;grid-auto-rows:max-content', css)
+        self.assertIn('height:42px;min-height:42px', css)
+        self.assertIn('select:not([multiple]):not([size])', css)
+        self.assertIn('.search-field input{height:42px;font-size:inherit}', css)
+
     def test_patch_versions_are_consistent(self):
         config = yaml.safe_load((ROOT / "iot_syslog/config.yaml").read_text(encoding="utf-8"))
-        self.assertEqual(config["version"], "0.3.2")
+        self.assertEqual(config["version"], "0.3.3")
         self.assertEqual(iot_syslog.__version__, config["version"])
         self.assertEqual(config["name"], "IoT Syslog")
         self.assertEqual(config["panel_title"], "IoT Syslog")
