@@ -2,6 +2,15 @@
 
 IoT Syslog stores device and audit events in a searchable local database. It supports standards-compliant syslog senders and directly matches the remote logging support in IoT Modular Device v2.1 and later.
 
+## Download events
+
+On **Events**, use **Download events > TXT** for plain-text messages or **CSV**
+for event metadata and messages. Both formats contain all events matching the
+currently applied filters across pages; with no filters they contain all stored
+events. Edit and apply filters with **Search** before exporting. Downloads do not
+change the current page or filters. Fields in CSV are protected against spreadsheet
+formula execution; TXT preserves the original message text.
+
 ## First start with generated TLS
 
 The default settings enable encrypted syslog on TCP port 6514 and disable unencrypted UDP.

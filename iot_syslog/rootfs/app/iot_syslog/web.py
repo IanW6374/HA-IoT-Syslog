@@ -83,12 +83,14 @@ class WebInterface:
         app.router.add_get("/events", self.index)
         app.router.add_get("/settings", self.index)
         app.router.add_get("/app.js", self.javascript)
+        app.router.add_get("/form_requirements.js", self.form_requirements)
         app.router.add_get("/styles.css", self.styles)
         app.router.add_get("/api/events", self.events)
         app.router.add_get("/api/facets", self.facets)
         app.router.add_get("/api/status", self.status)
         app.router.add_get("/api/export.csv", self.export_csv)
         app.router.add_get("/api/export.log", self.export_log)
+        app.router.add_get("/api/export.txt", self.export_txt)
         app.router.add_get("/api/ca.der", self.ca_certificate_der)
         app.router.add_get("/api/ca.pem", self.ca_certificate_pem)
         self.runner = web.AppRunner(app, access_log=None)
@@ -107,6 +109,9 @@ class WebInterface:
 
     async def javascript(self, _request: web.Request) -> web.FileResponse:
         return web.FileResponse(self.static_dir / "app.js")
+
+    async def form_requirements(self, _request: web.Request) -> web.FileResponse:
+        return web.FileResponse(self.static_dir / "form_requirements.js")
 
     async def styles(self, _request: web.Request) -> web.FileResponse:
         return web.FileResponse(self.static_dir / "styles.css")
@@ -165,6 +170,9 @@ class WebInterface:
 
     async def export_log(self, request: web.Request) -> web.StreamResponse:
         return await self._export(request, "log")
+
+    async def export_txt(self, request: web.Request) -> web.StreamResponse:
+        return await self._export(request, "txt")
 
     async def _export(self, request: web.Request, format_name: str) -> web.StreamResponse:
         filters = _filters(request)  # Validate before sending download headers.

@@ -52,6 +52,7 @@ h1, h2, p { margin: 0; }
 h2 { font-size: 22px; letter-spacing: -0.02em; }
 .eyebrow { color: var(--accent); font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .top-actions { display: flex; flex-wrap: wrap; justify-content: end; gap: 8px; }
+.download-events{flex-shrink:0;text-align:right}.download-events h2{font-size:.85rem;margin:0 0 8px;color:var(--muted)}
 
 .status-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 8px 0 20px; }
 .status-card, .panel, .notice { background: var(--panel); border: 1px solid var(--border); border-radius: 17px; box-shadow: var(--shadow); }
@@ -174,3 +175,4 @@ textarea,select[multiple],select[size]{height:auto}
 .check{border:0;background:transparent;padding:0;min-height:42px;align-self:end;align-items:center}
 input[type="checkbox"],input[type="radio"]{width:16px;height:16px;min-height:16px;padding:0;margin:0;flex:0 0 16px}
 .search-field input{height:42px;font-size:inherit}
+.field-requirement{color:var(--muted);font-size:.75rem;font-weight:400}

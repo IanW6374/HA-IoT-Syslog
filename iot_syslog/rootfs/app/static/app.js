@@ -243,7 +243,7 @@ document.querySelector("#refresh-events").addEventListener("click", (event) => {
   loadEvents({ force: true, trigger: event.currentTarget });
 });
 function filteredDownloadURL(formatName) {
-  const url = endpoint(formatName === "csv" ? "api/export.csv" : "api/export.log");
+  const url = endpoint(formatName === "csv" ? "api/export.csv" : "api/export.txt");
   for (const [key, value] of state.query) url.searchParams.set(key, value);
   return url;
 }
@@ -256,7 +256,7 @@ function downloadFilteredEvents(formatName) {
   link.remove();
   setPortalStatus(document.querySelector("#filter-status"), "", "Download requested for all events matching the applied filters.");
 }
-exportButton.addEventListener("click", () => downloadFilteredEvents("log"));
+exportButton.addEventListener("click", () => downloadFilteredEvents("txt"));
 exportCSVButton.addEventListener("click", () => downloadFilteredEvents("csv"));
 for (const button of document.querySelectorAll("[data-summary-refresh]")) {
   button.addEventListener("click", () => loadSummary({ trigger: button, announce: true }));

@@ -109,6 +109,11 @@ class IntegrationTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(len(lines), 620)
                 self.assertEqual(lines[0], "API failed 619 é")
                 self.assertEqual(lines[-1], "API failed 0 é")
+                async with session.get(f"http://127.0.0.1:{port}/api/export.txt", params=filters) as response:
+                    self.assertEqual(response.status, 200)
+                    self.assertEqual(response.content_type, "text/plain")
+                    self.assertIn('attachment; filename="iot-syslog-filtered.txt"', response.headers['Content-Disposition'])
+                    self.assertEqual((await response.text()).splitlines(), lines)
                 async with session.get(f"http://127.0.0.1:{port}/api/export.csv", params=filters) as response:
                     self.assertEqual(response.status, 200)
                     self.assertEqual(response.content_type, "text/csv")
@@ -116,14 +121,14 @@ class IntegrationTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(len(exported), 620)
                 self.assertEqual(exported[0]["message"], lines[0])
                 self.assertEqual(exported[-1]["message"], lines[-1])
-                for path in ("export.log", "export.csv"):
+                for path in ("export.log", "export.txt", "export.csv"):
                     async with session.get(f"http://127.0.0.1:{port}/api/{path}", params={"severity": "9"}) as response:
                         self.assertEqual(response.status, 400)
                         self.assertNotIn("Content-Disposition", response.headers)
                     async with session.get(f"http://127.0.0.1:{port}/api/{path}", params={"q": "absent"}) as response:
                         self.assertEqual(response.status, 200)
                         text = await response.text()
-                        self.assertEqual(len(text.splitlines()), 0 if path.endswith("log") else 1)
+                        self.assertEqual(len(text.splitlines()), 1 if path.endswith("csv") else 0)
         finally:
             await interface.close()
 

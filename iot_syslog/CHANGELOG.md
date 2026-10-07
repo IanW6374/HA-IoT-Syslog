@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.5
+
+- Group TXT and CSV buttons under Download events; export all events matching
+  the applied view filters across pages. Preserve the legacy .log endpoint.
+- Use the portfolio's required/optional field labels.
+
 ## 0.3.4
 
 - Download all events matching the applied filters as a plain-text syslog
