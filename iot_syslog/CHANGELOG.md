@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.6
+
+- Show compact icons only for required fields; leave optional fields unmarked.
+
 ## 0.3.5
 
 - Group TXT and CSV buttons under Download events; export all events matching
