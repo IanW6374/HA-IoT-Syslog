@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased
+## 0.3.4
+
+- Download all events matching the applied filters as a plain-text syslog
+  file or CSV, without the old silent 500-event cap. Stream from a read-only
+  SQLite snapshot so ingestion continues and exports use bounded memory.
+- Keep filters and the Events page in place when requesting a download.
+  Protect spreadsheet CSV fields against formula execution.
 
 ## 0.3.3
 

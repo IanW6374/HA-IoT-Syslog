@@ -70,6 +70,32 @@ class StorageTests(unittest.TestCase):
         self.assertEqual(self.store.purge(30, now), 1)
         self.assertEqual([item["message"] for item in self.store.search({})["events"]], ["current"])
 
+    def test_export_has_no_page_limit_and_stays_on_its_read_only_snapshot(self):
+        now = "2026-08-24T12:00:00.000Z"
+        self.store.insert_many(event(now, message=f"match {index}") for index in range(650))
+        self.store.insert_many([event(now, hostname="different", message="exclude")])
+        exported = self.store.export_events({"hostname": "controller"})
+        first = next(exported)
+        self.store.insert_many([event(now, message="new arrival")])
+        self.store.connection.execute("DELETE FROM events WHERE hostname='controller'")
+        self.store.connection.commit()
+        snapshot = [first, *exported]
+        self.assertEqual(len(snapshot), 650)
+        self.assertEqual(snapshot[0]["message"], "match 649")
+        self.assertEqual(snapshot[-1]["message"], "match 0")
+        self.assertNotIn("new arrival", [item["message"] for item in snapshot])
+        self.assertEqual(len({item["id"] for item in snapshot}), 650)
+
+    def test_export_applies_all_filters_and_releases_reader_on_close(self):
+        now = "2026-08-24T12:00:00.000Z"
+        self.store.insert_many([event(now, app_name="IoTMD-Audit", message="API failed", severity=3), event(now)])
+        filters = {"q": "API failed", "hostname": "controller", "app": "IoTMD-Audit", "source": "audit", "severity": 3, "transport": "tls", "start": now, "end": now}
+        exported = self.store.export_events(filters)
+        self.assertEqual(next(exported)["source"], "audit")
+        exported.close()
+        self.assertEqual(list(exported), [])
+        self.assertEqual(list(self.store.export_events({**filters, "source": "device"})), [])
+
 
 if __name__ == "__main__":
     unittest.main()

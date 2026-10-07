@@ -21,6 +21,7 @@ AUDIT_APPLICATIONS = ("iotmd-audit",)
 class EventStore:
     def __init__(self, path: Path):
         path.parent.mkdir(parents=True, exist_ok=True)
+        self.path = path.resolve()
         self.connection = sqlite3.connect(path)
         self.connection.row_factory = sqlite3.Row
         self.connection.execute("PRAGMA journal_mode=WAL")
@@ -139,6 +140,30 @@ class EventStore:
             "oldest": row[1],
             "newest": row[2],
         }
+
+    def export_events(self, filters: dict[str, object]):
+        """Iterate all matching rows from a read-only snapshot, not a UI page.
+
+        A separate WAL reader lets ingestion continue while a browser consumes
+        the download. Its snapshot cannot acquire later arrivals or change
+        order halfway through an export. Closing the iterator releases it.
+        """
+        where, values = self._where(filters)
+        connection = sqlite3.connect(self.path.as_uri() + "?mode=ro", uri=True)
+        connection.row_factory = sqlite3.Row
+        try:
+            cursor = connection.execute(
+                f"SELECT * FROM events{where} ORDER BY received_at DESC, id DESC", values
+            )
+            while batch := cursor.fetchmany(100):
+                for row in batch:
+                    item = dict(row)
+                    item["severity_name"] = SEVERITY_NAMES.get(item["severity"], str(item["severity"]))
+                    item["facility_name"] = FACILITY_NAMES.get(item["facility"], str(item["facility"]))
+                    item["source"] = "audit" if item["app_name"].lower() in AUDIT_APPLICATIONS else "device"
+                    yield item
+        finally:
+            connection.close()
 
     def purge(self, retention_days: int, now: datetime | None = None) -> int:
         current = now or datetime.now(timezone.utc)

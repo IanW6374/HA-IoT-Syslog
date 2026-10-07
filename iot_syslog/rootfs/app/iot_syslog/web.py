@@ -88,6 +88,7 @@ class WebInterface:
         app.router.add_get("/api/facets", self.facets)
         app.router.add_get("/api/status", self.status)
         app.router.add_get("/api/export.csv", self.export_csv)
+        app.router.add_get("/api/export.log", self.export_log)
         app.router.add_get("/api/ca.der", self.ca_certificate_der)
         app.router.add_get("/api/ca.pem", self.ca_certificate_pem)
         self.runner = web.AppRunner(app, access_log=None)
@@ -159,21 +160,52 @@ class WebInterface:
             headers={"Content-Disposition": 'attachment; filename="iot-syslog-ca.pem"'},
         )
 
-    async def export_csv(self, request: web.Request) -> web.Response:
-        result = self.store.search(_filters(request), limit=500, offset=0)
+    async def export_csv(self, request: web.Request) -> web.StreamResponse:
+        return await self._export(request, "csv")
+
+    async def export_log(self, request: web.Request) -> web.StreamResponse:
+        return await self._export(request, "log")
+
+    async def _export(self, request: web.Request, format_name: str) -> web.StreamResponse:
+        filters = _filters(request)  # Validate before sending download headers.
+        events = self.store.export_events(filters)
+        response = web.StreamResponse(headers={
+            "Content-Type": "text/csv; charset=utf-8" if format_name == "csv" else "text/plain; charset=utf-8",
+            "Content-Disposition": f'attachment; filename="iot-syslog-filtered.{format_name}"',
+            "Cache-Control": "no-store",
+            "X-Content-Type-Options": "nosniff",
+        })
         output = io.StringIO()
         columns = (
             "received_at", "event_time", "hostname", "source", "app_name", "severity_name",
             "facility_name", "transport", "peer", "message", "raw",
         )
         writer = csv.DictWriter(output, fieldnames=columns, extrasaction="ignore")
-        writer.writeheader()
-        writer.writerows(result["events"])
-        return web.Response(
-            text=output.getvalue(),
-            content_type="text/csv",
-            headers={"Content-Disposition": 'attachment; filename="iot-syslog.csv"'},
-        )
+        if format_name == "csv":
+            writer.writeheader()
+        try:
+            await response.prepare(request)
+            buffered_rows = 0
+            for event in events:
+                if format_name == "csv":
+                    # Prevent spreadsheet formula execution in sender-controlled
+                    # fields. The .log export preserves the original text.
+                    writer.writerow({key: ("'" + value if isinstance(value, str) and value.lstrip().startswith(("=", "+", "-", "@")) else value) for key, value in event.items()})
+                else:
+                    output.write(str(event["raw"] or event["message"]).rstrip("\r\n") + "\n")
+                buffered_rows += 1
+                if output.tell() >= 64 * 1024 or buffered_rows >= 100:
+                    await response.write(output.getvalue().encode("utf-8"))
+                    output.seek(0)
+                    output.truncate(0)
+                    buffered_rows = 0
+            if output.tell():
+                await response.write(output.getvalue().encode("utf-8"))
+            await response.write_eof()
+            return response
+        finally:
+            events.close()
+            output.close()
 
     async def close(self) -> None:
         if self.runner:

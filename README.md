@@ -19,7 +19,7 @@ It receives the protocol implemented by IoT MD and other standards-compliant sen
 - SQLite persistence in the app's backed-up `/data` directory
 - configurable retention from 1 to 3,650 days with automatic cleanup
 - bounded messages and ingest queue to protect the Home Assistant host
-- CSV export for the current filters
+- plain-text syslog and CSV downloads for all events matching the applied filters, across every page
 - `aarch64` and `amd64` images published through GitHub Container Registry
 
 ## Install
@@ -47,6 +47,15 @@ TLS provides encryption in transit and authenticates the server to each IoT MD d
 Generated private keys remain in the app's persistent `/data/tls` directory and are never offered for download. The search interface is exposed only through authenticated Home Assistant ingress. UDP is available for compatibility but is unencrypted and disabled by default.
 
 Do not commit production certificates, private keys, databases, or exported logs to this repository.
+
+## Filtered downloads
+
+In Events, apply your filters, then select **Download filtered log** for the
+original syslog text or **CSV** for a spreadsheet-friendly export. Downloads
+include every matching event, not just the visible page or latest 500 rows.
+New arrivals after the download snapshot starts are not included. CSV fields
+that could execute spreadsheet formulas are prefixed with an apostrophe; the
+plain-text log preserves sender text.
 
 ## Development
 

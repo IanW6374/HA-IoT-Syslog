@@ -8,6 +8,7 @@ const rows = document.querySelector("#event-rows");
 const errorBox = document.querySelector("#error");
 const searchButton = document.querySelector("#search");
 const exportButton = document.querySelector("#export");
+const exportCSVButton = document.querySelector("#export-csv");
 let eventRequestSequence = 0;
 let eventRequestInFlight = false;
 
@@ -126,6 +127,7 @@ async function loadEvents({ force = false, trigger = null, feedback = "" } = {})
     document.querySelector("#previous").disabled = state.offset === 0;
     document.querySelector("#next").disabled = state.offset + PAGE_SIZE >= state.total;
     exportButton.disabled = state.total === 0;
+    exportCSVButton.disabled = state.total === 0;
     document.querySelector("#refresh-state").textContent = `Updated ${new Date().toLocaleTimeString()}`;
     if (feedback) {
       const count = `${result.total.toLocaleString()} event${result.total === 1 ? "" : "s"}`;
@@ -240,11 +242,22 @@ document.querySelector("#next").addEventListener("click", () => {
 document.querySelector("#refresh-events").addEventListener("click", (event) => {
   loadEvents({ force: true, trigger: event.currentTarget });
 });
-document.querySelector("#export").addEventListener("click", () => {
-  const url = endpoint("api/export.csv");
+function filteredDownloadURL(formatName) {
+  const url = endpoint(formatName === "csv" ? "api/export.csv" : "api/export.log");
   for (const [key, value] of state.query) url.searchParams.set(key, value);
-  window.location.assign(url);
-});
+  return url;
+}
+function downloadFilteredEvents(formatName) {
+  const link = document.createElement("a");
+  link.href = filteredDownloadURL(formatName);
+  link.download = `iot-syslog-filtered.${formatName}`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setPortalStatus(document.querySelector("#filter-status"), "", "Download requested for all events matching the applied filters.");
+}
+exportButton.addEventListener("click", () => downloadFilteredEvents("log"));
+exportCSVButton.addEventListener("click", () => downloadFilteredEvents("csv"));
 for (const button of document.querySelectorAll("[data-summary-refresh]")) {
   button.addEventListener("click", () => loadSummary({ trigger: button, announce: true }));
 }

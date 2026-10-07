@@ -19,7 +19,7 @@ class StaticInterfaceTests(unittest.TestCase):
 
     def test_patch_versions_are_consistent(self):
         config = yaml.safe_load((ROOT / "iot_syslog/config.yaml").read_text(encoding="utf-8"))
-        self.assertEqual(config["version"], "0.3.3")
+        self.assertEqual(config["version"], "0.3.4")
         self.assertEqual(iot_syslog.__version__, config["version"])
         self.assertEqual(config["name"], "IoT Syslog")
         self.assertEqual(config["panel_title"], "IoT Syslog")
@@ -73,6 +73,18 @@ class StaticInterfaceTests(unittest.TestCase):
         self.assertIn('<div class="actions">', form)
         self.assertIn('id="reset" class="button secondary"', form)
         self.assertLess(form.index('id="reset"'), form.index('id="search"'))
+
+    def test_downloads_use_applied_filters_without_pagination_or_navigation(self):
+        page = (ROOT / "iot_syslog/rootfs/app/static/index.html").read_text()
+        script = (ROOT / "iot_syslog/rootfs/app/static/app.js").read_text()
+        self.assertIn('Download filtered log</button>', page)
+        self.assertIn('id="export-csv"', page)
+        helper = script.split('function filteredDownloadURL(', 1)[1].split('\n}', 1)[0]
+        self.assertIn('state.query', helper)
+        self.assertIn('api/export.log', helper)
+        self.assertNotIn('state.offset', helper)
+        self.assertNotIn('PAGE_SIZE', helper)
+        self.assertNotIn('window.location.assign', script)
 
 
 if __name__ == "__main__":
