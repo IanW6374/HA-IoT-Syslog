@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.7
+
+- Standardise checkbox-first controls, required markers, aligned form fields,
+  helper typography and accessible notification/error feedback.
+- Show receiver refresh failures on Overview, Settings and Events without
+  discarding previously loaded data or overwriting newer manual-action status.
+- Serve the shared form stylesheet through ingress and cover it in regression
+  tests. Retain filtered TXT/CSV downloads and existing filter behaviour.
+
 ## 0.3.6
 
 - Show compact icons only for required fields; leave optional fields unmarked.

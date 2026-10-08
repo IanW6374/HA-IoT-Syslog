@@ -31,7 +31,9 @@ function showError(message) {
 
 function setPortalStatus(element, stateName, message) {
   if (!element) return;
+  delete element.dataset.refreshError;
   element.className = `portal-status${stateName ? ` ${stateName}` : ""}`;
+  element.setAttribute('role', stateName === 'error' ? 'alert' : 'status');
   element.textContent = message || "";
 }
 
@@ -39,6 +41,11 @@ function setSummaryStatus(stateName, message) {
   for (const element of document.querySelectorAll("[data-summary-status]")) {
     setPortalStatus(element, stateName, message);
   }
+}
+
+function statusRefreshNotices() {
+  return activePage === 'events' ? [document.querySelector('#filter-status')].filter(Boolean) :
+    [...document.querySelectorAll('[data-summary-status]')];
 }
 
 function setBusy(button, busy, label) {
@@ -209,11 +216,17 @@ async function loadSummary({ trigger = null, announce = false } = {}) {
 async function refreshStatus() {
   try {
     const response = await fetch(endpoint("api/status"));
-    if (!response.ok) return;
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const status = await response.json();
     applyStatus(status);
-  } catch (_error) {
-    // The next refresh or user query will report a persistent connection problem.
+    for (const element of statusRefreshNotices()) {
+      if (element.dataset.refreshError === '1') { setPortalStatus(element, '', 'Receiver status refreshed.'); delete element.dataset.refreshError; }
+    }
+  } catch (error) {
+    for (const element of statusRefreshNotices()) {
+      setPortalStatus(element, "error", `Could not refresh receiver status: ${error.message}. Previously loaded data is retained.`);
+      element.dataset.refreshError = '1';
+    }
   }
 }
 

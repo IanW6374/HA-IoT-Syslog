@@ -85,6 +85,7 @@ class WebInterface:
         app.router.add_get("/app.js", self.javascript)
         app.router.add_get("/form_requirements.js", self.form_requirements)
         app.router.add_get("/styles.css", self.styles)
+        app.router.add_get("/form_controls.css", self.form_controls)
         app.router.add_get("/api/events", self.events)
         app.router.add_get("/api/facets", self.facets)
         app.router.add_get("/api/status", self.status)
@@ -115,6 +116,9 @@ class WebInterface:
 
     async def styles(self, _request: web.Request) -> web.FileResponse:
         return web.FileResponse(self.static_dir / "styles.css")
+
+    async def form_controls(self, _request: web.Request) -> web.FileResponse:
+        return web.FileResponse(self.static_dir / "form_controls.css")
 
     async def events(self, request: web.Request) -> web.Response:
         result = self.store.search(

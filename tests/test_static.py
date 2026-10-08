@@ -17,9 +17,17 @@ class StaticInterfaceTests(unittest.TestCase):
         self.assertIn('select:not([multiple]):not([size])', css)
         self.assertIn('.search-field input{height:42px;font-size:inherit}', css)
 
+    def test_receiver_refresh_failure_is_visible_and_cleared_after_recovery(self):
+        script = (ROOT / 'iot_syslog/rootfs/app/static/app.js').read_text()
+        self.assertIn('function statusRefreshNotices()', script)
+        self.assertIn("activePage === 'events' ? [document.querySelector('#filter-status')]", script)
+        self.assertIn('Previously loaded data is retained.', script)
+        self.assertIn("delete element.dataset.refreshError", script)
+        self.assertIn("stateName === 'error' ? 'alert' : 'status'", script)
+
     def test_patch_versions_are_consistent(self):
         config = yaml.safe_load((ROOT / "iot_syslog/config.yaml").read_text(encoding="utf-8"))
-        self.assertEqual(config["version"], "0.3.6")
+        self.assertEqual(config["version"], "0.3.7")
         self.assertEqual(iot_syslog.__version__, config["version"])
         self.assertEqual(config["name"], "IoT Syslog")
         self.assertEqual(config["panel_title"], "IoT Syslog")
