@@ -10,6 +10,15 @@ ROOT = Path(__file__).parents[1]
 
 
 class StaticInterfaceTests(unittest.TestCase):
+    def test_certificate_details_and_download_are_only_on_settings(self):
+        page = (ROOT / 'iot_syslog/rootfs/app/static/index.html').read_text()
+        overview, settings = page.split('<div data-page="settings">', 1)
+        for identifier in ('tls-details', 'ca-download'):
+            self.assertNotIn('id="' + identifier + '"', overview)
+            self.assertEqual(settings.count('id="' + identifier + '"'), 1)
+        self.assertIn('>Certificates</h2>', settings)
+        self.assertNotIn('Change retention, listener and certificate paths in Settings', page)
+
     def test_form_controls_share_portal_alignment_and_height(self):
         css = (ROOT / 'iot_syslog/rootfs/app/static/styles.css').read_text()
         self.assertIn('align-content:start;grid-auto-rows:max-content', css)
@@ -27,7 +36,7 @@ class StaticInterfaceTests(unittest.TestCase):
 
     def test_patch_versions_are_consistent(self):
         config = yaml.safe_load((ROOT / "iot_syslog/config.yaml").read_text(encoding="utf-8"))
-        self.assertEqual(config["version"], "0.3.7")
+        self.assertEqual(config["version"], "0.3.8")
         self.assertEqual(iot_syslog.__version__, config["version"])
         self.assertEqual(config["name"], "IoT Syslog")
         self.assertEqual(config["panel_title"], "IoT Syslog")

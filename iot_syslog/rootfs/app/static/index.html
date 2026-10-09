@@ -27,7 +27,6 @@
       </div>
     <div class="top-actions">
       <button class="button secondary" data-summary-refresh type="button">Refresh status</button>
-      <a id="ca-download" class="button secondary hidden" href="api/ca.der" download>Download IoT Syslog CA (.der)</a>
     </div>
     </section>
     <div class="portal-status" data-summary-status role="status" aria-live="polite"></div>
@@ -38,7 +37,7 @@
       <a class="status-card" href="events"><span>Dropped events</span><strong id="dropped-count">—</strong></a>
     </section>
 
-    <section id="tls-details" class="notice hidden" aria-live="polite"></section></div>
+    </div>
 
     <div data-page="events"><section class="hero split"><div><p class="eyebrow">Events</p><h1>Search syslog events</h1><p>Filter device and audit events by sender, application, severity, transport or time.</p></div><section class="download-events" aria-labelledby="download-heading"><h2 id="download-heading">Download events</h2><div class="top-actions"><button id="export" class="button secondary" type="button" title="Download all events matching the applied filters, across every page, as TXT" disabled>TXT</button><button id="export-csv" class="button secondary" type="button" title="Download all events matching the applied filters, across every page, as CSV" disabled>CSV</button></div></section></section>
     <section id="query" class="panel filters" aria-labelledby="filter-heading">
@@ -98,7 +97,15 @@
         <button id="next" class="button secondary" type="button">Next</button>
       </nav>
     </section></div>
-    <div data-page="settings"><section class="hero split"><div><p class="eyebrow">Configuration</p><h1>Syslog settings</h1><p>Runtime settings are managed from the Home Assistant app configuration.</p></div><div class="top-actions"><button class="button secondary" data-summary-refresh type="button">Refresh status</button></div></section><div class="portal-status" data-summary-status role="status" aria-live="polite"></div><section class="panel detail-list"><div class="panel-heading"><div><p class="eyebrow">Receiver</p><h2>Active configuration</h2></div></div><dl><dt>Retention period</dt><dd id="settings-retention">—</dd><dt>TLS listener</dt><dd id="settings-tls">—</dd><dt>Accepted server names</dt><dd id="settings-server-names">—</dd><dt>Stored events</dt><dd id="settings-stored">—</dd></dl><p class="muted">Change retention, listener and certificate paths in Settings → Apps → IoT Syslog → Configuration, then restart the app.</p></section></div>
+    <div data-page="settings">
+      <section class="hero split"><div><p class="eyebrow">Configuration</p><h1>Syslog settings</h1><p>Runtime settings are managed from the Home Assistant app configuration.</p></div><div class="top-actions"><button class="button secondary" data-summary-refresh type="button">Refresh status</button></div></section>
+      <div class="portal-status" data-summary-status role="status" aria-live="polite"></div>
+      <section class="panel detail-list"><div class="panel-heading"><div><p class="eyebrow">Receiver</p><h2>Active configuration</h2></div></div><dl><dt>Retention period</dt><dd id="settings-retention">—</dd><dt>TLS listener</dt><dd id="settings-tls">—</dd><dt>Accepted server names</dt><dd id="settings-server-names">—</dd><dt>Stored events</dt><dd id="settings-stored">—</dd></dl></section>
+      <section class="panel" aria-labelledby="certificates-heading">
+        <div class="panel-heading"><h2 id="certificates-heading">Certificates</h2><a id="ca-download" class="button secondary hidden" href="api/ca.der" download>Download IoT Syslog CA (.der)</a></div>
+        <div id="tls-details" class="notice hidden" aria-live="polite"></div>
+      </section>
+    </div>
   </main>
   <script src="app.js" defer></script>
 </body>

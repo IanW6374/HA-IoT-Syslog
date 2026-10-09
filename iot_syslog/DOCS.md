@@ -17,8 +17,8 @@ The default settings enable encrypted syslog on TCP port 6514 and disable unencr
 
 1. Set **TLS server names** to every hostname or IP address that devices will use for this Home Assistant host. Separate multiple values with commas. For example: `homeassistant.local,192.168.1.20`.
 2. Start the app, then open its web interface.
-3. Select **Download IoT Syslog CA (.der)**. This is the public CA certificate; the CA private key never leaves app storage.
-4. On each IoT MD portal, open **Maintenance > Certificates**, import the file as **Syslog trusted CA**, and allow the requested restart.
+3. Open **Settings > Certificates**, then select **Download IoT Syslog CA (.der)**. This is the public CA certificate; the CA private key never leaves app storage.
+4. On each IoT MD portal, open **Device > Settings > Certificates**, import the file as **Syslog trusted CA**, and allow the requested restart.
 5. In the IoT MD logging configuration, enable device logs and/or audit events, select **TLS**, enter one of the exact server names from step 1, and use port `6514`.
 
 Hostname verification is intentional. If a device connects to `192.168.1.20`, that IP must be listed in **TLS server names**; listing only `homeassistant.local` is not sufficient.

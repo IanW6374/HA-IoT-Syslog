@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.8
+
+- Move certificate details and the public CA download from Overview to Settings.
+- Remove the redundant configuration/restart instruction from Settings, and
+  update certificate setup documentation to match the current device menus.
+
 ## 0.3.7
 
 - Standardise checkbox-first controls, required markers, aligned form fields,
